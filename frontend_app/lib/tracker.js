@@ -20,11 +20,16 @@
  *   visibility-change { type, x, y, ts, visibilityState }
  *   page-show         { type, x, y, ts, persisted }
  *   page-hide         { type, x, y, ts, persisted }
+ *   viewport          { type, ts, innerWidth, innerHeight, devicePixelRatio,
+ *                       scrollWidth, scrollHeight, screenWidth, screenHeight, userAgent }
+ *   element-rect      { type, ts, element, left, right, top, bottom, width, height,
+ *                       thumbWidth?, thumbHeight? }   // page-coords (scrollX/Y added in)
  *
  * Usage:
- *   tracker.start(userId)   — begin tracking
- *   tracker.stop()          — flush remaining data and detach listeners
- *   tracker.getBinaryBlob() — encode fullHistory as binary blob (call before stop)
+ *   tracker.start(userId)        — begin tracking
+ *   tracker.stop()               — flush remaining data and detach listeners
+ *   tracker.recordMetadata(obj)  — push a metadata event (e.g. viewport, element-rect)
+ *   tracker.getBinaryBlob()      — encode fullHistory as binary blob (call before stop)
  */
 
 import axios from 'axios';
@@ -323,6 +328,15 @@ const tracker = {
     clearInterval(flushTimer);
     await flush();
     userId = null;
+  },
+
+  /**
+   * Record a metadata event (viewport, element-rect, etc.). Called from page
+   * components after layout-affecting events (mount, resize). Caller supplies
+   * `type` and any payload fields; `ts` is added automatically.
+   */
+  recordMetadata(payload) {
+    pushEvent({ ...payload, ts: Date.now() });
   },
 
   /**

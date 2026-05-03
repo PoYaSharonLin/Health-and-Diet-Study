@@ -25,6 +25,10 @@
 <script>
 import tracker from '@/lib/tracker';
 
+// Keep in sync with .native-slider::-webkit-slider-thumb { width / height } in <style> below.
+const THUMB_PX = 22;
+const RESIZE_DEBOUNCE_MS = 150;
+
 export default {
   name: 'SliderBar',
 
@@ -55,7 +59,42 @@ export default {
     },
   },
 
+  mounted() {
+    this.$nextTick(() => this.emitRect());
+    this._resizeTimer = null;
+    this._onResize = () => {
+      clearTimeout(this._resizeTimer);
+      this._resizeTimer = setTimeout(() => this.emitRect(), RESIZE_DEBOUNCE_MS);
+    };
+    window.addEventListener('resize', this._onResize);
+  },
+
+  beforeUnmount() {
+    if (this._onResize) {
+      window.removeEventListener('resize', this._onResize);
+      clearTimeout(this._resizeTimer);
+    }
+  },
+
   methods: {
+    emitRect() {
+      const input = this.$el?.querySelector?.('.native-slider');
+      if (!input) return;
+      const r = input.getBoundingClientRect();
+      tracker.recordMetadata({
+        type:        'element-rect',
+        element:     `${this.trackPrefix}-slider`,
+        left:        Math.round(r.left + window.scrollX),
+        right:       Math.round(r.right + window.scrollX),
+        top:         Math.round(r.top + window.scrollY),
+        bottom:      Math.round(r.bottom + window.scrollY),
+        width:       Math.round(r.width),
+        height:      Math.round(r.height),
+        thumbWidth:  THUMB_PX,
+        thumbHeight: THUMB_PX,
+      });
+    },
+
     onPointerMove(e) {
       this.pointerX = Math.round(e.pageX);
       this.pointerY = Math.round(e.pageY);
