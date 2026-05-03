@@ -101,15 +101,19 @@ bundle exec rake db:drop        # Delete database (destructive)
 
 ## Inspecting uploaded S3 data
 
-Session event blobs are uploaded to S3 under `behavior_data/`. Quick ways to
-check what's there:
+Session event blobs are uploaded to S3 under `behavior_data/`. The bucket name
+is read from `S3_BUCKET_NAME` in `backend_app/config/secrets.yml`. Requires the
+`aws` CLI on `PATH` with credentials configured.
 
 ```shell
 # List all uploaded sessions
-aws s3 ls s3://amzn-s3-frontend-monitoring/behavior_data/
+bundle exec rake s3:list
 
-# Download all sessions to data folder under current directory
-aws s3 sync s3://amzn-s3-frontend-monitoring/behavior_data/ ./data/
+# Sync all sessions to ./data/
+bundle exec rake s3:sync
+
+# Sync to a custom destination
+bundle exec rake "s3:sync[./mydata/]"
 ```
 
 ## Production

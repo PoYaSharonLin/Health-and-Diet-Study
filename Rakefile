@@ -82,6 +82,11 @@ namespace :db do
 end
 
 namespace :s3 do
+  task :config do
+    require_app('config')
+    @bucket = SurveyTracker::Api.config.S3_BUCKET_NAME
+  end
+
   desc 'Configure CORS on the S3 bucket (run once during setup)'
   task :configure_cors do
     require_app('infrastructure')
@@ -94,6 +99,17 @@ namespace :s3 do
       puts "==> CORS configuration failed: #{result[:error]}"
       exit 1
     end
+  end
+
+  desc 'List all uploaded session blobs in S3'
+  task list: [:config] do
+    sh "aws s3 ls s3://#{@bucket}/behavior_data/"
+  end
+
+  desc 'Sync all session blobs from S3 to a local directory (default ./data/)'
+  task :sync, [:dest] => [:config] do |_t, args|
+    dest = args[:dest] || './data/'
+    sh "aws s3 sync s3://#{@bucket}/behavior_data/ #{dest}"
   end
 end
 
