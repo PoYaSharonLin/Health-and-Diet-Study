@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import PracticePage from '../pages/PracticePage.vue';
 import SurveyPage from '../pages/SurveyPage.vue';
+import SummaryPage from '../pages/SummaryPage.vue';
 import PostSurvey from '../pages/PostSurvey.vue';
 import NotFound from '../pages/404.vue';
 
@@ -14,6 +15,11 @@ const routes = [
     path: '/survey',
     name: 'Survey',
     component: SurveyPage,
+  },
+  {
+    path: '/summary',
+    name: 'Summary',
+    component: SummaryPage,
   },
   {
     path: '/postsurvey',
@@ -41,6 +47,9 @@ const router = createRouter({
 router.beforeEach((to) => {
   if (to.name === 'Survey' && !localStorage.getItem('survey_practice_done')) {
     return { name: 'Practice', query: to.query };
+  }
+  if (to.name === 'Summary' && !sessionStorage.getItem('survey_answers_v1')) {
+    return { name: 'Survey', query: to.query };
   }
   if (to.name === 'PostSurvey' && !sessionStorage.getItem('survey_answers_v1')) {
     return { name: 'Survey', query: to.query };

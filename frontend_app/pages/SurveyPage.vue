@@ -160,7 +160,7 @@ export default {
       localStorage.removeItem('survey_answers_draft');
       const uid   = this.userId;
       const query = uid ? `?uid=${encodeURIComponent(uid)}` : '';
-      this.$router.push(`/postsurvey${query}`);
+      this.$router.push(`/summary${query}`);
     },
     toggleConfirm(index) {
       this.confirmedQuestions[index] = !this.confirmedQuestions[index];
