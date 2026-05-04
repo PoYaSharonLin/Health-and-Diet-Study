@@ -10,6 +10,7 @@ module SurveyTracker
           pointer-move pointer-down pointer-up pointer-over pointer-out
           key-down key-up highlight scroll slider-change
           focus blur visibility-change page-show page-hide
+          viewport element-rect
         ].freeze
 
         def call(respondent_id:, events:)
