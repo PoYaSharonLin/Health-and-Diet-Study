@@ -204,7 +204,7 @@ export default {
         this.submitted = true;
 
         const moonbearUrl = new URL(
-          'https://moonbear.herokuapp.com/onlinesurvey/f922a475-4ef3-4d3a-992d-996b507f732c/a9c757d3-b80d-419c-a56d-1c9cc0d016a0'
+          'https://moonbear.herokuapp.com/onlinesurvey/f922a475-4ef3-4d3a-992d-996b507f732c/d4dbab7c-c7c9-43c4-819f-27494691bb91'
         );
         moonbearUrl.searchParams.set('uid', this.userId);
         const condition = session.getCondition();
