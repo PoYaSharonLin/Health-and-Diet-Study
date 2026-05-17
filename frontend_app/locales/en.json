@@ -25,6 +25,13 @@
     "contactPrefix": "If you have any questions about this research, please contact the research team: "
   },
 
+  "deviceBlock": {
+    "title": "Please use a computer to complete this survey",
+    "lead": "This survey does not support phones or tablets. Please reopen the invitation link on a desktop or laptop computer to continue.",
+    "action": "If you do not have access to a computer at the moment, please close this page. Thank you for your willingness to take part in this research.",
+    "contactPrefix": "If you have any questions about this research, please contact the research team: "
+  },
+
   "practice": {
     "title": "Slider Practice",
     "intro": {

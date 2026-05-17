@@ -2,8 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import PracticePage from '../pages/PracticePage.vue';
 import SurveyPage from '../pages/SurveyPage.vue';
 import SummaryPage from '../pages/SummaryPage.vue';
+import DeviceBlockPage from '../pages/DeviceBlockPage.vue';
 import NotFound from '../pages/404.vue';
 import session, { isConditionValid } from '../lib/session';
+import { isMobileOrTablet } from '../lib/device';
 
 const CONDITION_PROTECTED = ['Practice', 'Survey', 'Summary'];
 
@@ -28,6 +30,11 @@ const routes = [
     redirect: '/practice',
   },
   {
+    path: '/device-block',
+    name: 'DeviceBlock',
+    component: DeviceBlockPage,
+  },
+  {
     path: '/invalid',
     name: 'Invalid',
     component: NotFound,
@@ -45,6 +52,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
+  // Device gate: keep phones/tablets out of the entire survey flow.
+  if (to.name !== 'DeviceBlock' && isMobileOrTablet()) {
+    return { name: 'DeviceBlock' };
+  }
+
   // Condition gate: every survey-flow route must have a valid ?condition,
   // either fresh in the URL or previously stored in localStorage.
   if (CONDITION_PROTECTED.includes(to.name)) {
