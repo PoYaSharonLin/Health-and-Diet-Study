@@ -1,0 +1,97 @@
+{
+  "common": {
+    "next": "下一頁",
+    "uidMissing": "請重新開啟包含 ?uid=… 參數的連結。",
+    "confirmTitle": {
+      "notTouched": "請先移動滑桿",
+      "notTouchedClick": "請先點一下滑桿",
+      "confirmed": "已確認",
+      "ready": "確認答案"
+    }
+  },
+
+  "langToggle": {
+    "zh": "中文",
+    "en": "English",
+    "ariaLabel": "切換語言"
+  },
+
+  "notFound": {
+    "title": "無法進入問卷",
+    "lead": "很抱歉，您所使用的連結不完整或內含的參數有誤，本系統無法為您建立有效的填答紀錄。",
+    "warn": "為維護研究資料之完整性與您的權益，您此次進入本頁面的任何操作皆{strong}，亦不會儲存任何足以識別您身分的資料。",
+    "warnStrong": "不會被記錄",
+    "action": "請您直接關閉本頁面，造成不便敬請見諒，並感謝您原本願意參與本研究的意願。",
+    "contactPrefix": "如對本研究有任何疑問，歡迎來信聯絡研究團隊："
+  },
+
+  "practice": {
+    "title": "滑桿操作練習",
+    "intro": {
+      "lead": "在作答時，請移動滑桿至您想要的答案位置，並點擊右下方的打勾符號確定您的作答，請注意，{strong}。",
+      "leadStrong": "作答後無法再更改您的答案"
+    },
+    "variantPlaceholder": {
+      "woEOwoRAM": "[woEO-woRAM｜控制組] 此處放置正式版的說明文字與圖片。",
+      "wEOwoRAM":  "[wEO-woRAM｜含 Encouragement Offering、無 RAM] 此處放置正式版的說明文字與圖片（含鼓勵訊息）。",
+      "woEOwRAM":  "[woEO-wRAM｜無 Encouragement Offering、含 RAM] 此處放置正式版的說明文字與圖片（含 Response Activation Model 提示）。",
+      "wEOwRAM":   "[wEO-wRAM｜含 Encouragement Offering、含 RAM] 此處放置正式版的說明文字與圖片（含鼓勵訊息與 Response Activation Model 提示）。"
+    },
+    "question": "請問您是否了解滑桿操作？ *",
+    "minLabel": "否",
+    "maxLabel": "是"
+  },
+
+  "survey": {
+    "title": "飲食行為問卷",
+    "uidWarning": "⚠ 未找到使用者 ID。請使用提供的連結進入此頁面。",
+    "intro": {
+      "h2": "過去一週的飲食回報",
+      "p": "請根據您對以下敘述的同意程度，使用滑桿作答（1 為最低，7 為最高）。"
+    },
+    "validationHint": "請確認所有題目後再繼續（已確認 {done}/{total} 題）",
+    "questions": [
+      { "text": "過去一週你有規律地吃三餐嗎？", "minLabel": "我這七天從未規律地吃三餐", "maxLabel": "我這七天都規律地吃三餐" },
+      { "text": "過去一週你有吃糖果或是零食嗎？", "minLabel": "我這七天都有吃糖果或零食", "maxLabel": "我這七天從未吃糖果或零食" },
+      { "text": "過去一週你有充分咀嚼食物，每一口至少咀嚼二十次後才吞嚥嗎？", "minLabel": "我這七天從未充分咀嚼食物就吞嚥", "maxLabel": "我這七天每一口都至少咀嚼二十次" },
+      { "text": "過去一週在口渴或炎熱時，你除了喝白開水外，有喝不健康飲品嗎(含糖或含酒精)?", "minLabel": "我這七天都有喝不健康的飲品", "maxLabel": "我這七天都只喝白開水" },
+      { "text": "過去一週你有吃油炸或油膩的食物（如花生、薯片、炸雞等）嗎？", "minLabel": "我這七天都吃油炸的食物", "maxLabel": "我這七天從未吃油炸的食物" },
+      { "text": "過去一週你每天都有吃水果嗎？", "minLabel": "我這七天從未吃水果", "maxLabel": "我這七天都有吃水果" },
+      { "text": "過去一週你每天都有吃綠色蔬菜嗎？", "minLabel": "我這七天從未吃綠色蔬菜", "maxLabel": "我這七天都有吃綠色蔬菜" },
+      { "text": "過去一週你每天都有吃宵夜嗎?", "minLabel": "我這七天都有吃宵夜", "maxLabel": "我這七天從未吃宵夜" },
+      { "text": "過去一週你有一邊看電視或用平板、手機、電腦一邊吃東西嗎？", "minLabel": "我這七天吃東西時都會分心", "maxLabel": "我這七天都會專心吃東西" },
+      { "text": "過去一週你心情不好時，會透過吃東西讓心情變好嗎？", "minLabel": "我這七天都會透過吃東西讓心情變好", "maxLabel": "我這七天從未透過吃東西讓心情變好" },
+      { "text": "過去一週你會把吃東西當作獎勵自己或是慶祝的方式嗎？", "minLabel": "我這七天都用吃東西獎勵自己", "maxLabel": "我這七天從未用吃東西獎勵自己" },
+      { "text": "過去一週你會在非常飢餓的時候，才去賣場採購食物嗎？", "minLabel": "我這七天都等到非常餓才採購食物", "maxLabel": "我這七天從未等到非常餓才採購食物" }
+    ]
+  },
+
+  "summary": {
+    "title": "回答總覽",
+    "subtitle": "請檢視您剛才的作答結果，並回答下方最後幾個問題。",
+    "noAnswers": "找不到問卷作答紀錄，請從頭開始。",
+    "score": {
+      "label": "總分",
+      "hint": "分數越高代表越健康的飲食行為"
+    },
+    "tableHeaders": {
+      "num": "#",
+      "question": "題目",
+      "score": "分數",
+      "bar": "作答"
+    },
+    "postIntro": {
+      "h2": "最後幾個問題",
+      "p": "請根據您的感受，使用滑桿作答（0 為最低，9 為最高）。"
+    },
+    "postQuestions": [
+      { "text": "你的好友在回答這份問卷時多有可能謊報？",   "minLabel": "非常可能謊報", "maxLabel": "非常不可能謊報" },
+      { "text": "一般受測者在回答這份問卷時多有可能謊報？", "minLabel": "非常可能謊報", "maxLabel": "非常不可能謊報" },
+      { "text": "你剛才在回答這份問卷時多有可能謊報？",     "minLabel": "非常可能謊報", "maxLabel": "非常不可能謊報" }
+    ],
+    "validationHint": "請確認所有題目後再提交（已確認 {done}/{total} 題）",
+    "submitBtn": "前往最後一份問卷",
+    "errorMsg": "上傳失敗，請點擊「前往最後一份問卷」重試。",
+    "spinnerText": "資料上傳中，請稍候…"
+  }
+}

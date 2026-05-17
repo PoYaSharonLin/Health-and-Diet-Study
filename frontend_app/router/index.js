@@ -2,8 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import PracticePage from '../pages/PracticePage.vue';
 import SurveyPage from '../pages/SurveyPage.vue';
 import SummaryPage from '../pages/SummaryPage.vue';
-import PostSurvey from '../pages/PostSurvey.vue';
 import NotFound from '../pages/404.vue';
+import session, { isConditionValid } from '../lib/session';
+
+const CONDITION_PROTECTED = ['Practice', 'Survey', 'Summary'];
 
 const routes = [
   {
@@ -22,13 +24,13 @@ const routes = [
     component: SummaryPage,
   },
   {
-    path: '/postsurvey',
-    name: 'PostSurvey',
-    component: PostSurvey,
-  },
-  {
     path: '/',
     redirect: '/practice',
+  },
+  {
+    path: '/invalid',
+    name: 'Invalid',
+    component: NotFound,
   },
   {
     path: '/:pathMatch(.*)*',
@@ -42,16 +44,24 @@ const router = createRouter({
   routes,
 });
 
-// Guard: anyone who opens /survey directly is sent to /practice first,
-// unless they already confirmed the practice question in this browser.
 router.beforeEach((to) => {
+  // Condition gate: every survey-flow route must have a valid ?condition,
+  // either fresh in the URL or previously stored in localStorage.
+  if (CONDITION_PROTECTED.includes(to.name)) {
+    const urlCond = to.query.condition;
+    if (urlCond !== undefined && !isConditionValid(urlCond)) {
+      return { name: 'Invalid' };
+    }
+    const effective = urlCond ?? session.getCondition();
+    if (!isConditionValid(effective)) {
+      return { name: 'Invalid' };
+    }
+  }
+
   if (to.name === 'Survey' && !localStorage.getItem('survey_practice_done')) {
     return { name: 'Practice', query: to.query };
   }
   if (to.name === 'Summary' && !sessionStorage.getItem('survey_answers_v1')) {
-    return { name: 'Survey', query: to.query };
-  }
-  if (to.name === 'PostSurvey' && !sessionStorage.getItem('survey_answers_v1')) {
     return { name: 'Survey', query: to.query };
   }
 });

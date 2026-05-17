@@ -4,17 +4,17 @@
       <div class="survey-page">
         <!-- Header -->
         <header class="survey-header" data-track="page-header">
-          <h1 class="survey-title">飲食行為問卷</h1>
+          <h1 class="survey-title">{{ $t('survey.title') }}</h1>
           <p class="survey-subtitle warning" v-if="!userId">
-            ⚠ 未找到使用者 ID。請使用提供的連結進入此頁面。
+            {{ $t('survey.uidWarning') }}
           </p>
         </header>
 
         <!-- Survey body -->
         <main v-if="userId" class="survey-body">
           <section class="intro-section" data-track="page-intro">
-            <h2>過去一週的飲食回報</h2>
-            <p>請根據您對以下敘述的同意程度，使用滑桿作答（1 為最低，7 為最高）。</p>
+            <h2>{{ $t('survey.intro.h2') }}</h2>
+            <p>{{ $t('survey.intro.p') }}</p>
           </section>
 
           <div v-for="(q, index) in questions" :key="index" class="survey-section" :data-track="'q' + (index + 1) + '-element'">
@@ -24,22 +24,25 @@
               <SliderBar
                 v-model="answers.dietary[index]"
                 :track-prefix="'q' + (index + 1)"
-                :min="1"
-                :max="7"
+                :min="0"
+                :max="9"
                 :step="1"
                 :minLabel="q.minLabel"
                 :maxLabel="q.maxLabel"
                 :finished="confirmedQuestions[index]"
+                @interact="onSliderInteract(index)"
+                @change="onSliderInteract(index)"
               />
             </div>
             <!-- Confirm Button (Icon only) -->
             <div class="confirm-container">
               <button
                 class="confirm-btn"
-                :class="{ confirmed: confirmedQuestions[index] }"
+                :class="{ confirmed: confirmedQuestions[index], disabled: !canConfirm(index) }"
+                :disabled="!canConfirm(index)"
                 @click="toggleConfirm(index)"
                 :data-track="'q' + (index + 1) + '-confirm'"
-                :title="confirmedQuestions[index] ? '已確認' : '確認答案'"
+                :title="confirmButtonTitle(index)"
               >
                 <span class="icon">✓</span>
               </button>
@@ -49,7 +52,7 @@
           <!-- Next -->
           <div class="submit-row">
             <p v-if="!allConfirmed" class="validation-hint">
-              請確認所有題目後再繼續（已確認 {{ confirmedCount }}/{{ questions.length }} 題）
+              {{ $t('survey.validationHint', { done: confirmedCount, total: questions.length }) }}
             </p>
             <button
               class="submit-btn"
@@ -57,14 +60,14 @@
               :disabled="!allConfirmed"
               @click="goNext"
             >
-              下一頁
+              {{ $t('common.next') }}
             </button>
           </div>
         </main>
 
         <!-- No UID state -->
         <div v-else class="no-uid-notice">
-          <p>請重新開啟包含 <code>?uid=…</code> 參數的連結。</p>
+          <p>{{ $t('common.uidMissing') }}</p>
         </div>
       </div>
     </BehaviorTracker>
@@ -82,26 +85,15 @@ export default {
   components: { BehaviorTracker, SliderBar },
 
   data() {
+    const flags = session.getFlags();
+    const sliderDefault = flags?.hasRAM ? 0 : 9;
     return {
       userId:    null,
-      questions: [
-        { text: '過去一週你有規律地吃三餐嗎？', minLabel: '我這七天從未規律地吃三餐', maxLabel: '我這七天都規律地吃三餐' },
-        { text: '過去一週你有吃糖果或是零食嗎？', minLabel: '我這七天都有吃糖果或零食', maxLabel: '我這七天從未吃糖果或零食' },
-        { text: '過去一週你有充分咀嚼食物，每一口至少咀嚼二十次後才吞嚥嗎？', minLabel: '我這七天從未充分咀嚼食物就吞嚥', maxLabel: '我這七天每一口都至少咀嚼二十次' },
-        { text: '過去一週在口渴或炎熱時，你除了喝白開水外，有喝不健康飲品嗎(含糖或含酒精)?', minLabel: '我這七天都有喝不健康的飲品', maxLabel: '我這七天都只喝白開水' },
-        { text: '過去一週你有吃油炸或油膩的食物（如花生、薯片、炸雞等）嗎？', minLabel: '我這七天都吃油炸的食物', maxLabel: '我這七天從未吃油炸的食物' },
-        { text: '過去一週你每天都有吃水果嗎？', minLabel: '我這七天從未吃水果', maxLabel: '我這七天都有吃水果' },
-        { text: '過去一週你每天都有吃綠色蔬菜嗎？', minLabel: '我這七天從未吃綠色蔬菜', maxLabel: '我這七天都有吃綠色蔬菜' },
-        { text: '過去一週你每天都有吃宵夜嗎?', minLabel: '我這七天都有吃宵夜', maxLabel: '我這七天從未吃宵夜' },
-        { text: '過去一週你有一邊看電視或用平板、手機、電腦一邊吃東西嗎？', minLabel: '我這七天吃東西時都會分心', maxLabel: '我這七天都會專心吃東西' },
-        { text: '過去一週你心情不好時，會透過吃東西讓心情變好嗎？', minLabel: '我這七天都會透過吃東西讓心情變好', maxLabel: '我這七天從未透過吃東西讓心情變好' },
-        { text: '過去一週你會把吃東西當作獎勵自己或是慶祝的方式嗎？', minLabel: '我這七天都用吃東西獎勵自己', maxLabel: '我這七天從未用吃東西獎勵自己' },
-        { text: '過去一週你會在非常飢餓的時候，才去賣場採購食物嗎？', minLabel: '我這七天都等到非常餓才採購食物', maxLabel: '我這七天從未等到非常餓才採購食物' },
-      ],
       answers: {
-        dietary: Array(12).fill(1),
+        dietary: Array(12).fill(sliderDefault),
       },
       confirmedQuestions: Array(12).fill(false),
+      sliderTouched:      Array(12).fill(false),
     };
   },
 
@@ -143,6 +135,13 @@ export default {
   },
 
   computed: {
+    questions() {
+      return this.$tm('survey.questions').map(q => ({
+        text:     this.$rt(q.text),
+        minLabel: this.$rt(q.minLabel),
+        maxLabel: this.$rt(q.maxLabel),
+      }));
+    },
     confirmedCount() {
       return this.confirmedQuestions.filter(Boolean).length;
     },
@@ -162,7 +161,19 @@ export default {
       const query = uid ? `?uid=${encodeURIComponent(uid)}` : '';
       this.$router.push(`/summary${query}`);
     },
+    onSliderInteract(index) {
+      this.sliderTouched[index] = true;
+    },
+    canConfirm(index) {
+      return this.confirmedQuestions[index] || this.sliderTouched[index];
+    },
+    confirmButtonTitle(index) {
+      if (this.confirmedQuestions[index]) return this.$t('common.confirmTitle.confirmed');
+      if (!this.sliderTouched[index]) return this.$t('common.confirmTitle.notTouchedClick');
+      return this.$t('common.confirmTitle.ready');
+    },
     toggleConfirm(index) {
+      if (!this.canConfirm(index)) return;
       this.confirmedQuestions[index] = !this.confirmedQuestions[index];
     },
   },
@@ -338,6 +349,17 @@ export default {
 
 .confirm-btn .icon {
   font-size: 1.1rem;
+}
+
+.confirm-btn.disabled,
+.confirm-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.confirm-btn.disabled:hover,
+.confirm-btn:disabled:hover {
+  background: #fff;
 }
 
 /* ── Submit ─────────────────────────────────────────────── */

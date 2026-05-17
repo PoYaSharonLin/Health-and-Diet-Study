@@ -2,29 +2,25 @@
   <div class="practice-wrapper">
     <div class="practice-page">
         <header class="practice-header">
-          <h1 class="practice-title">滑桿操作練習</h1>
+          <h1 class="practice-title">{{ $t('practice.title') }}</h1>
         </header>
 
         <main class="practice-body" v-if="userId">
-          <section class="intro-section">
-            <p>
-              在作答時，請移動滑桿至您想要的答案位置，並點擊右下方的打勾符號確定您的作答，
-              請注意，<strong>作答後無法再更改您的答案</strong>。
-            </p>
-          </section>
+          <component :is="variantComponent" v-if="variantComponent" />
 
           <div class="practice-section" data-track="practice-q1-element">
-            <label class="question-label">請問您是否了解滑桿操作？ *</label>
+            <label class="question-label">{{ $t('practice.question') }}</label>
             <div class="slider-container">
               <SliderBar
                 v-model="answer"
                 track-prefix="practice-q1"
-                :min="1"
-                :max="7"
+                :min="0"
+                :max="9"
                 :step="1"
-                minLabel="否"
-                maxLabel="是"
+                :minLabel="$t('practice.minLabel')"
+                :maxLabel="$t('practice.maxLabel')"
                 :finished="confirmed"
+                @interact="onSliderChange"
                 @change="onSliderChange"
               />
             </div>
@@ -35,7 +31,7 @@
                 @click="confirm"
                 data-track="practice-q1-confirm"
                 :disabled="!sliderMoved || confirmed"
-                :title="confirmed ? '已確認' : (!sliderMoved ? '請先移動滑桿' : '確認答案')"
+                :title="confirmTitle"
               >
                 <span class="icon">✓</span>
               </button>
@@ -50,13 +46,13 @@
               :disabled="!confirmed"
               data-track="practice-next"
             >
-              下一頁
+              {{ $t('common.next') }}
             </button>
           </div>
         </main>
 
         <div v-else class="no-uid-notice">
-          <p>請重新開啟包含 <code>?uid=…</code> 參數的連結。</p>
+          <p>{{ $t('common.uidMissing') }}</p>
         </div>
     </div>
   </div>
@@ -65,6 +61,17 @@
 <script>
 import SliderBar from '@/components/SliderBar.vue';
 import session   from '@/lib/session';
+import PracticeWoEOWoRAM from '@/components/practice/PracticeWoEOWoRAM.vue';
+import PracticeWEOWoRAM  from '@/components/practice/PracticeWEOWoRAM.vue';
+import PracticeWoEOWRAM  from '@/components/practice/PracticeWoEOWRAM.vue';
+import PracticeWEOWRAM   from '@/components/practice/PracticeWEOWRAM.vue';
+
+const VARIANT_BY_CONDITION = {
+  'woEO-woRAM': PracticeWoEOWoRAM,
+  'wEO-woRAM':  PracticeWEOWoRAM,
+  'woEO-wRAM':  PracticeWoEOWRAM,
+  'wEO-wRAM':   PracticeWEOWRAM,
+};
 
 export default {
   name: 'PracticePage',
@@ -81,6 +88,18 @@ export default {
 
   async created() {
     this.userId = await session.init();
+  },
+
+  computed: {
+    variantComponent() {
+      const flags = session.getFlags();
+      return flags ? VARIANT_BY_CONDITION[flags.condition] || null : null;
+    },
+    confirmTitle() {
+      if (this.confirmed) return this.$t('common.confirmTitle.confirmed');
+      if (!this.sliderMoved) return this.$t('common.confirmTitle.notTouched');
+      return this.$t('common.confirmTitle.ready');
+    },
   },
 
   methods: {
@@ -147,14 +166,6 @@ export default {
 
 .practice-body {
   padding: 40px;
-}
-
-.intro-section {
-  margin-bottom: 32px;
-  text-align: center;
-  color: #555;
-  line-height: 1.7;
-  font-size: 1rem;
 }
 
 .practice-section {

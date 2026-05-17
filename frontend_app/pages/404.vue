@@ -1,8 +1,16 @@
 <template>
   <div class="not-found">
-    <h1>404</h1>
-    <p>Page not found.</p>
-    <a href="/survey">Back to Survey</a>
+    <div class="card">
+      <h1>{{ $t('notFound.title') }}</h1>
+      <p class="lead">{{ $t('notFound.lead') }}</p>
+      <i18n-t keypath="notFound.warn" tag="p" scope="global">
+        <template #strong><strong>{{ $t('notFound.warnStrong') }}</strong></template>
+      </i18n-t>
+      <p class="action">{{ $t('notFound.action') }}</p>
+      <p class="contact">
+        {{ $t('notFound.contactPrefix') }}<a href="mailto:sharon.lin@iss.nthu.edu.tw">sharon.lin@iss.nthu.edu.tw</a>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -13,15 +21,35 @@ export default { name: 'NotFound' };
 <style scoped>
 .not-found {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  padding: 48px 16px;
   font-family: 'Inter', sans-serif;
-  color: #888;
+  background: #f4f7f6;
+  color: #444;
 }
-.not-found h1 { font-size: 5rem; font-weight: 900; color: #6c63ff; }
-.not-found p  { font-size: 1.2rem; margin: 8px 0 24px; }
-.not-found a  { color: #6c63ff; text-decoration: none; font-weight: 600; }
-.not-found a:hover { text-decoration: underline; }
+.card {
+  width: 100%;
+  max-width: 640px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 48px rgba(108, 99, 255, 0.12);
+  padding: 48px 40px;
+  text-align: center;
+  line-height: 1.8;
+}
+.card h1 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #6c63ff;
+  margin: 0 0 24px;
+  letter-spacing: -0.5px;
+}
+.card p { margin: 0 0 16px; font-size: 1rem; }
+.card .lead { font-size: 1.05rem; color: #333; }
+.card .action { margin-top: 24px; font-weight: 600; color: #333; }
+.card .contact { margin-top: 32px; font-size: 0.9rem; color: #777; }
+.card a { color: #6c63ff; text-decoration: none; font-weight: 600; }
+.card a:hover { text-decoration: underline; }
 </style>

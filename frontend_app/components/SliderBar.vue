@@ -10,6 +10,7 @@
         v-model.number="internalValue"
         @input="onInput"
         @change="onFinish"
+        @pointerdown="onPointerDown"
         @pointermove="onPointerMove"
         :disabled="finished"
       >
@@ -43,7 +44,7 @@ export default {
     finished:      { type: Boolean, default: false },
   },
 
-  emits: ['update:modelValue', 'change'],
+  emits: ['update:modelValue', 'change', 'interact'],
 
   data() {
     return {
@@ -93,6 +94,20 @@ export default {
         thumbWidth:  THUMB_PX,
         thumbHeight: THUMB_PX,
       });
+    },
+
+    onPointerDown(e) {
+      if (this.finished) return;
+      this.pointerX = Math.round(e.pageX);
+      this.pointerY = Math.round(e.pageY);
+      tracker.recordSlider(
+        this.internalValue,
+        `${this.trackPrefix}-slider`,
+        this.pointerX,
+        this.pointerY,
+        'press',
+      );
+      this.$emit('interact');
     },
 
     onPointerMove(e) {

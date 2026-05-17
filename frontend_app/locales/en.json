@@ -1,0 +1,97 @@
+{
+  "common": {
+    "next": "Next",
+    "uidMissing": "Please reopen the link including the ?uid=… parameter.",
+    "confirmTitle": {
+      "notTouched": "Please move the slider first",
+      "notTouchedClick": "Please tap the slider first",
+      "confirmed": "Confirmed",
+      "ready": "Confirm answer"
+    }
+  },
+
+  "langToggle": {
+    "zh": "中文",
+    "en": "English",
+    "ariaLabel": "Switch language"
+  },
+
+  "notFound": {
+    "title": "Cannot enter the survey",
+    "lead": "Sorry, the link you used is incomplete or contains invalid parameters, and the system cannot create a valid response record for you.",
+    "warn": "To preserve research data integrity and your rights, none of your actions on this page {strong}, nor will any personally identifiable information be stored.",
+    "warnStrong": "will be recorded",
+    "action": "Please close this page directly. We apologize for the inconvenience and thank you for your original willingness to participate in this research.",
+    "contactPrefix": "If you have any questions about this research, please contact the research team: "
+  },
+
+  "practice": {
+    "title": "Slider Practice",
+    "intro": {
+      "lead": "When answering, move the slider to your desired position and click the check mark on the bottom right to confirm. Please note, {strong}.",
+      "leadStrong": "your answer cannot be modified once confirmed"
+    },
+    "variantPlaceholder": {
+      "woEOwoRAM": "[woEO-woRAM | Control] Placeholder for the production-version instructions and image.",
+      "wEOwoRAM":  "[wEO-woRAM | with Encouragement Offering, no RAM] Placeholder for the production-version instructions and image (including encouragement message).",
+      "woEOwRAM":  "[woEO-wRAM | no Encouragement Offering, with RAM] Placeholder for the production-version instructions and image (including Response Activation Model prompts).",
+      "wEOwRAM":   "[wEO-wRAM | with Encouragement Offering, with RAM] Placeholder for the production-version instructions and image (including encouragement message and Response Activation Model prompts)."
+    },
+    "question": "Do you understand how the slider works? *",
+    "minLabel": "No",
+    "maxLabel": "Yes"
+  },
+
+  "survey": {
+    "title": "Dietary Behavior Survey",
+    "uidWarning": "⚠ User ID not found. Please enter this page via the provided link.",
+    "intro": {
+      "h2": "Report your dietary behavior over the past week",
+      "p": "Please use the slider to indicate your level of agreement with each statement (1 = lowest, 7 = highest)."
+    },
+    "validationHint": "Please confirm all items before continuing ({done}/{total} confirmed)",
+    "questions": [
+      { "text": "In the past week, did you eat three meals regularly?", "minLabel": "I never ate three meals regularly in the past seven days", "maxLabel": "I ate three meals regularly every day in the past seven days" },
+      { "text": "In the past week, did you eat candy or snacks?", "minLabel": "I ate candy or snacks every day in the past seven days", "maxLabel": "I never ate candy or snacks in the past seven days" },
+      { "text": "In the past week, did you chew your food thoroughly, chewing at least 20 times per bite before swallowing?", "minLabel": "I never chewed my food thoroughly before swallowing in the past seven days", "maxLabel": "I chewed at least 20 times per bite in the past seven days" },
+      { "text": "In the past week, when you were thirsty or it was hot, did you drink unhealthy beverages (sugary or alcoholic) besides plain water?", "minLabel": "I drank unhealthy beverages every day in the past seven days", "maxLabel": "I drank only plain water in the past seven days" },
+      { "text": "In the past week, did you eat fried or greasy foods (e.g., peanuts, chips, fried chicken)?", "minLabel": "I ate fried foods every day in the past seven days", "maxLabel": "I never ate fried foods in the past seven days" },
+      { "text": "In the past week, did you eat fruit every day?", "minLabel": "I never ate fruit in the past seven days", "maxLabel": "I ate fruit every day in the past seven days" },
+      { "text": "In the past week, did you eat green vegetables every day?", "minLabel": "I never ate green vegetables in the past seven days", "maxLabel": "I ate green vegetables every day in the past seven days" },
+      { "text": "In the past week, did you eat late-night snacks every day?", "minLabel": "I ate late-night snacks every day in the past seven days", "maxLabel": "I never ate late-night snacks in the past seven days" },
+      { "text": "In the past week, did you eat while watching TV or using a tablet, phone, or computer?", "minLabel": "I was distracted while eating in the past seven days", "maxLabel": "I focused on eating in the past seven days" },
+      { "text": "In the past week, when you were in a bad mood, did you eat to make yourself feel better?", "minLabel": "I ate to improve my mood every time in the past seven days", "maxLabel": "I never ate to improve my mood in the past seven days" },
+      { "text": "In the past week, did you use food as a reward or as a way to celebrate?", "minLabel": "I used food as a reward every time in the past seven days", "maxLabel": "I never used food as a reward in the past seven days" },
+      { "text": "In the past week, did you wait until you were very hungry to go grocery shopping?", "minLabel": "I always waited until I was very hungry to shop in the past seven days", "maxLabel": "I never waited until I was very hungry to shop in the past seven days" }
+    ]
+  },
+
+  "summary": {
+    "title": "Response Summary",
+    "subtitle": "Please review your answers and respond to the final few questions below.",
+    "noAnswers": "No survey responses found. Please start from the beginning.",
+    "score": {
+      "label": "Total Score",
+      "hint": "A higher score indicates healthier dietary behavior"
+    },
+    "tableHeaders": {
+      "num": "#",
+      "question": "Question",
+      "score": "Score",
+      "bar": "Response"
+    },
+    "postIntro": {
+      "h2": "Final Questions",
+      "p": "Please use the slider to answer based on how you feel (0 = lowest, 9 = highest)."
+    },
+    "postQuestions": [
+      { "text": "How likely is it that your close friends would lie when answering this survey?",   "minLabel": "Very likely to lie", "maxLabel": "Very unlikely to lie" },
+      { "text": "How likely is it that a typical respondent would lie when answering this survey?", "minLabel": "Very likely to lie", "maxLabel": "Very unlikely to lie" },
+      { "text": "How likely is it that you lied when answering this survey just now?",            "minLabel": "Very likely to lie", "maxLabel": "Very unlikely to lie" }
+    ],
+    "validationHint": "Please confirm all items before submitting ({done}/{total} confirmed)",
+    "submitBtn": "Go to the final survey",
+    "errorMsg": "Upload failed. Please click \"Go to the final survey\" to retry.",
+    "spinnerText": "Uploading data, please wait…"
+  }
+}

@@ -13,6 +13,19 @@ const USER_ID_KEY    = 'survey_user_id';
 const ORIG_URL_KEY   = 'survey_original_url';
 const CONDITION_KEY  = 'survey_condition';
 
+export const VALID_CONDITIONS = ['woEO-woRAM', 'wEO-woRAM', 'woEO-wRAM', 'wEO-wRAM'];
+
+const FLAGS_BY_CONDITION = {
+  'woEO-woRAM': { hasEO: false, hasRAM: false },
+  'wEO-woRAM':  { hasEO: true,  hasRAM: false },
+  'woEO-wRAM':  { hasEO: false, hasRAM: true  },
+  'wEO-wRAM':   { hasEO: true,  hasRAM: true  },
+};
+
+export function isConditionValid(c) {
+  return typeof c === 'string' && VALID_CONDITIONS.includes(c);
+}
+
 const session = {
   /**
    * Called on app boot. Extracts uid from URL if present,
@@ -28,7 +41,7 @@ const session = {
       localStorage.setItem(USER_ID_KEY, urlUid);
       localStorage.setItem(ORIG_URL_KEY, window.location.href);
     }
-    if (urlCond) {
+    if (urlCond && isConditionValid(urlCond)) {
       localStorage.setItem(CONDITION_KEY, urlCond);
     }
 
@@ -65,6 +78,12 @@ const session = {
 
   getCondition() {
     return localStorage.getItem(CONDITION_KEY) || null;
+  },
+
+  getFlags() {
+    const c = this.getCondition();
+    if (!isConditionValid(c)) return null;
+    return { condition: c, ...FLAGS_BY_CONDITION[c] };
   },
 
   getShareUrl() {

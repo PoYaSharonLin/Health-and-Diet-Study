@@ -3,84 +3,156 @@
     <BehaviorTracker>
       <div class="survey-page">
         <header class="survey-header" data-track="page-header">
-          <h1 class="survey-title">回答總覽</h1>
-          <p class="survey-subtitle">請檢視您剛才的作答結果。</p>
+          <h1 class="survey-title">{{ $t('summary.title') }}</h1>
+          <p class="survey-subtitle">{{ $t('summary.subtitle') }}</p>
         </header>
 
-        <main v-if="userId && answers.length === questions.length" class="survey-body">
+        <main v-if="userId && dietary.length === questions.length" class="survey-body">
           <section class="score-section" data-track="page-score">
-            <div class="score-label">總分</div>
-            <div class="score-value">{{ totalScore }} <span class="score-range">/ 84</span></div>
-            <div class="score-hint">分數區間 12–84，分數越高代表越健康的飲食行為</div>
+            <span class="score-label">{{ $t('summary.score.label') }}</span>
+            <span class="score-value">{{ totalScore }}</span>
+            <span class="score-range">/ {{ maxTotal }}</span>
+            <span class="score-hint">{{ $t('summary.score.hint') }}</span>
+          </section>
+
+          <table class="summary-table" data-track="summary-table">
+            <thead>
+              <tr>
+                <th class="col-num">{{ $t('summary.tableHeaders.num') }}</th>
+                <th class="col-question">{{ $t('summary.tableHeaders.question') }}</th>
+                <th class="col-score">{{ $t('summary.tableHeaders.score') }}</th>
+                <th class="col-bar">{{ $t('summary.tableHeaders.bar') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(q, index) in questions"
+                :key="index"
+                :data-track="'sq' + (index + 1) + '-row'"
+              >
+                <td class="col-num">{{ index + 1 }}</td>
+                <td class="col-question" :data-track="'sq' + (index + 1) + '-label'">
+                  {{ q.text }}
+                </td>
+                <td class="col-score" :data-track="'sq' + (index + 1) + '-score'">
+                  <span class="score-num">{{ dietary[index] }}</span>
+                  <span class="score-denom">/ {{ sliderMax }}</span>
+                </td>
+                <td class="col-bar">
+                  <div
+                    class="bar-track"
+                    role="progressbar"
+                    :aria-valuenow="dietary[index]"
+                    :aria-valuemin="sliderMin"
+                    :aria-valuemax="sliderMax"
+                  >
+                    <div
+                      class="bar-fill"
+                      :style="{ width: barPercent(dietary[index]) + '%' }"
+                    ></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <section class="post-intro" data-track="postsurvey-intro">
+            <h2>{{ $t('summary.postIntro.h2') }}</h2>
+            <p>{{ $t('summary.postIntro.p') }}</p>
           </section>
 
           <div
-            v-for="(q, index) in questions"
-            :key="index"
-            class="summary-section"
-            :data-track="'sq' + (index + 1) + '-element'"
+            v-for="(q, index) in postQuestions"
+            :key="'pq-' + index"
+            class="survey-section"
+            :data-track="'pq' + (index + 1) + '-element'"
           >
-            <div class="question-label" :data-track="'sq' + (index + 1) + '-label'">
-              ({{ index + 1 }}) {{ q.text }}
+            <label class="question-label" :data-track="'pq' + (index + 1) + '-label'">
+              ({{ index + 1 }}) {{ q.text }} *
+            </label>
+            <div class="slider-container">
+              <SliderBar
+                v-model="postAnswers[index]"
+                :track-prefix="'pq' + (index + 1)"
+                :min="sliderMin"
+                :max="sliderMax"
+                :step="1"
+                :minLabel="q.minLabel"
+                :maxLabel="q.maxLabel"
+                :finished="postConfirmed[index]"
+                @interact="onPostInteract(index)"
+                @change="onPostInteract(index)"
+              />
             </div>
-            <div class="answer-row">
-              <span class="answer-tag">你的答案</span>
-              <span class="answer-value">{{ answers[index] }}</span>
-              <span class="answer-scale">/ 7</span>
-            </div>
-            <div class="label-row">
-              <span class="label-cell label-min">1 = {{ q.minLabel }}</span>
-              <span class="label-sep">↔</span>
-              <span class="label-cell label-max">7 = {{ q.maxLabel }}</span>
+            <div class="confirm-container">
+              <button
+                class="confirm-btn"
+                :class="{ confirmed: postConfirmed[index], disabled: !canConfirmPost(index) }"
+                :disabled="!canConfirmPost(index)"
+                @click="toggleConfirm(index)"
+                :data-track="'pq' + (index + 1) + '-confirm'"
+                :title="postConfirmTitle(index)"
+              >
+                <span class="icon">✓</span>
+              </button>
             </div>
           </div>
 
           <div class="submit-row">
+            <p v-if="!allConfirmed && !submitted" class="validation-hint">
+              {{ $t('summary.validationHint', { done: confirmedCount, total: postQuestions.length }) }}
+            </p>
             <button
               class="submit-btn"
-              data-track="summary-next"
-              @click="goNext"
+              data-track="postsurvey-submit"
+              :disabled="submitting || submitted || !allConfirmed"
+              @click="submit"
             >
-              下一頁
+              {{ $t('summary.submitBtn') }}
             </button>
+            <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
           </div>
         </main>
 
         <div v-else class="no-uid-notice">
-          <p>找不到問卷作答紀錄，請從頭開始。</p>
+          <p>{{ $t('summary.noAnswers') }}</p>
         </div>
       </div>
     </BehaviorTracker>
+
+    <div v-if="submitting" class="spinner-overlay">
+      <div class="spinner"></div>
+      <p class="spinner-text">{{ $t('summary.spinnerText') }}</p>
+    </div>
   </div>
 </template>
 
 <script>
 import BehaviorTracker from '@/components/BehaviorTracker.vue';
+import SliderBar       from '@/components/SliderBar.vue';
 import session         from '@/lib/session';
+import tracker         from '@/lib/tracker';
+
+const SLIDER_MIN = 0;
+const SLIDER_MAX = 9;
 
 export default {
   name: 'SummaryPage',
 
-  components: { BehaviorTracker },
+  components: { BehaviorTracker, SliderBar },
 
   data() {
     return {
-      userId:  null,
-      answers: [],
-      questions: [
-        { text: '過去一週你有規律地吃三餐嗎？', minLabel: '我這七天從未規律地吃三餐', maxLabel: '我這七天都規律地吃三餐' },
-        { text: '過去一週你有吃糖果或是零食嗎？', minLabel: '我這七天都有吃糖果或零食', maxLabel: '我這七天從未吃糖果或零食' },
-        { text: '過去一週你有充分咀嚼食物，每一口至少咀嚼二十次後才吞嚥嗎？', minLabel: '我這七天從未充分咀嚼食物就吞嚥', maxLabel: '我這七天每一口都至少咀嚼二十次' },
-        { text: '過去一週在口渴或炎熱時，你除了喝白開水外，有喝不健康飲品嗎(含糖或含酒精)?', minLabel: '我這七天都有喝不健康的飲品', maxLabel: '我這七天都只喝白開水' },
-        { text: '過去一週你有吃油炸或油膩的食物（如花生、薯片、炸雞等）嗎？', minLabel: '我這七天都吃油炸的食物', maxLabel: '我這七天從未吃油炸的食物' },
-        { text: '過去一週你每天都有吃水果嗎？', minLabel: '我這七天從未吃水果', maxLabel: '我這七天都有吃水果' },
-        { text: '過去一週你每天都有吃綠色蔬菜嗎？', minLabel: '我這七天從未吃綠色蔬菜', maxLabel: '我這七天都有吃綠色蔬菜' },
-        { text: '過去一週你每天都有吃宵夜嗎?', minLabel: '我這七天都有吃宵夜', maxLabel: '我這七天從未吃宵夜' },
-        { text: '過去一週你有一邊看電視或用平板、手機、電腦一邊吃東西嗎？', minLabel: '我這七天吃東西時都會分心', maxLabel: '我這七天都會專心吃東西' },
-        { text: '過去一週你心情不好時，會透過吃東西讓心情變好嗎？', minLabel: '我這七天都會透過吃東西讓心情變好', maxLabel: '我這七天從未透過吃東西讓心情變好' },
-        { text: '過去一週你會把吃東西當作獎勵自己或是慶祝的方式嗎？', minLabel: '我這七天都用吃東西獎勵自己', maxLabel: '我這七天從未用吃東西獎勵自己' },
-        { text: '過去一週你會在非常飢餓的時候，才去賣場採購食物嗎？', minLabel: '我這七天都等到非常餓才採購食物', maxLabel: '我這七天從未等到非常餓才採購食物' },
-      ],
+      userId:     null,
+      dietary:    [],
+      submitting: false,
+      submitted:  false,
+      errorMsg:   '',
+      sliderMin:  SLIDER_MIN,
+      sliderMax:  SLIDER_MAX,
+      postAnswers:       Array(3).fill(SLIDER_MIN),
+      postConfirmed:     Array(3).fill(false),
+      postSliderTouched: Array(3).fill(false),
     };
   },
 
@@ -90,22 +162,158 @@ export default {
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.dietary)) this.answers = parsed.dietary;
+        if (Array.isArray(parsed.dietary)) this.dietary = parsed.dietary;
       } catch (_) { /* ignore malformed data */ }
     }
   },
 
   computed: {
+    questions() {
+      return this.$tm('survey.questions').map(q => ({
+        text:     this.$rt(q.text),
+        minLabel: this.$rt(q.minLabel),
+        maxLabel: this.$rt(q.maxLabel),
+      }));
+    },
+    postQuestions() {
+      return this.$tm('summary.postQuestions').map(q => ({
+        text:     this.$rt(q.text),
+        minLabel: this.$rt(q.minLabel),
+        maxLabel: this.$rt(q.maxLabel),
+      }));
+    },
     totalScore() {
-      return this.answers.reduce((sum, v) => sum + (Number(v) || 0), 0);
+      return this.dietary.reduce((sum, v) => sum + (Number(v) || 0), 0);
+    },
+    maxTotal() {
+      return this.questions.length * this.sliderMax;
+    },
+    confirmedCount() {
+      return this.postConfirmed.filter(Boolean).length;
+    },
+    allConfirmed() {
+      return this.postConfirmed.every(Boolean);
     },
   },
 
   methods: {
-    goNext() {
-      const uid   = this.userId;
-      const query = uid ? `?uid=${encodeURIComponent(uid)}` : '';
-      this.$router.push(`/postsurvey${query}`);
+    barPercent(value) {
+      const v = Number(value) || 0;
+      const range = this.sliderMax - this.sliderMin;
+      if (range <= 0) return 0;
+      return Math.max(0, Math.min(100, ((v - this.sliderMin) / range) * 100));
+    },
+
+    onPostInteract(index) {
+      this.postSliderTouched[index] = true;
+    },
+    canConfirmPost(index) {
+      return this.postConfirmed[index] || this.postSliderTouched[index];
+    },
+    postConfirmTitle(index) {
+      if (this.postConfirmed[index]) return this.$t('common.confirmTitle.confirmed');
+      if (!this.postSliderTouched[index]) return this.$t('common.confirmTitle.notTouchedClick');
+      return this.$t('common.confirmTitle.ready');
+    },
+    toggleConfirm(index) {
+      if (!this.canConfirmPost(index)) return;
+      this.postConfirmed[index] = !this.postConfirmed[index];
+    },
+
+    async submit() {
+      if (this.submitting || this.submitted || !this.allConfirmed) return;
+      this.errorMsg   = '';
+      this.submitting = true;
+
+      const startedAt = Date.now();
+      const minSpinnerMs = 1000;
+
+      try {
+        await import('axios').then(({ default: axios }) =>
+          axios.post('/api/survey/session', {
+            respondent_id: this.userId,
+            metadata: {
+              answers:      this.dietary,
+              post_answers: this.postAnswers,
+              submitted_at: new Date().toISOString(),
+            },
+          })
+        );
+
+        const presignRes = await fetch(
+          `/api/behavior/${encodeURIComponent(this.userId)}/presigned-url`
+        );
+        if (!presignRes.ok) {
+          throw new Error(`presigned-url failed: ${presignRes.status}`);
+        }
+        const { url, key, expires_at } = await presignRes.json();
+        console.log('[presigned-url] url:', url, '| key:', key, '| expires_at:', expires_at);
+
+        const buffer = tracker.getBinaryBlob();
+        const s3Res = await fetch(url, {
+          method:  'PUT',
+          headers: { 'Content-Type': 'application/octet-stream' },
+          body:    buffer,
+        });
+        if (!s3Res.ok) {
+          throw new Error(`S3 PUT failed: ${s3Res.status}`);
+        }
+        console.log('[confirm-upload] Confirm upload from S3 ✓');
+
+        const confirmRes = await fetch(
+          `/api/behavior/${encodeURIComponent(this.userId)}/confirm-upload`,
+          {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ key }),
+          }
+        );
+        if (!confirmRes.ok) {
+          throw new Error(`confirm-upload failed: ${confirmRes.status}`);
+        }
+        console.log('[confirm-upload] Confirm write-in in database ✓');
+        tracker.clearPersistedHistory();
+
+        const downloadRes = await fetch(
+          `/api/behavior/${encodeURIComponent(this.userId)}/download-url`
+        );
+        if (!downloadRes.ok) {
+          throw new Error(`download-url failed: ${downloadRes.status}`);
+        }
+        const { url: downloadUrl, expires_at: downloadExpiresAt } = await downloadRes.json();
+        console.log('[download-url] Get request successful ✓ | url:', downloadUrl, '| expires_at:', downloadExpiresAt);
+
+        const dataRes = await fetch(downloadUrl, { method: 'GET' });
+        if (dataRes.ok || dataRes.status === 206) {
+          console.log('[download-url] Download data successfully ✓');
+        } else {
+          console.error('[download-url] Object fetch failed:', dataRes.status);
+        }
+
+        const elapsed = Date.now() - startedAt;
+        if (elapsed < minSpinnerMs) {
+          await new Promise(r => setTimeout(r, minSpinnerMs - elapsed));
+        }
+
+        this.submitted = true;
+
+        const moonbearUrl = new URL(
+          'https://moonbear.herokuapp.com/onlinesurvey/f922a475-4ef3-4d3a-992d-996b507f732c/d4dbab7c-c7c9-43c4-819f-27494691bb91'
+        );
+        moonbearUrl.searchParams.set('uid', this.userId);
+        const condition = session.getCondition();
+        if (condition) moonbearUrl.searchParams.set('condition', condition);
+        window.location.href = moonbearUrl.toString();
+      } catch (err) {
+        console.error('[summary submit] error:', err);
+        const elapsed = Date.now() - startedAt;
+        if (elapsed < minSpinnerMs) {
+          await new Promise(r => setTimeout(r, minSpinnerMs - elapsed));
+        }
+        this.errorMsg = this.$t('summary.errorMsg');
+      } finally {
+        this.submitting = false;
+      }
     },
   },
 };
@@ -124,13 +332,13 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 48px 16px 80px;
+  padding: 24px 16px 48px;
   font-family: 'Inter', sans-serif;
 }
 
 .survey-page {
   width: 100%;
-  max-width: 800px;
+  max-width: 880px;
   margin: 0 auto;
   background: #fff;
   border-radius: 20px;
@@ -140,64 +348,170 @@ export default {
 
 .survey-header {
   background: #6c63ff;
-  padding: 40px 40px 32px;
+  padding: 24px 32px;
   color: #fff;
   text-align: center;
 }
 
 .survey-title {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 900;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
   letter-spacing: -0.5px;
 }
 
 .survey-subtitle {
   margin: 0;
-  font-size: 0.9rem;
-  opacity: 0.85;
+  font-size: 0.85rem;
+  opacity: 0.9;
 }
 
 .survey-body {
-  padding: 40px;
+  padding: 24px 32px 32px;
 }
 
 .score-section {
-  text-align: center;
-  margin-bottom: 32px;
-  padding: 28px 24px;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 18px;
+  margin-bottom: 14px;
   background: linear-gradient(135deg, #f0f0ff 0%, #eef7ff 100%);
-  border-radius: 14px;
+  border-radius: 10px;
   border: 1px solid #e0dfff;
 }
 
 .score-label {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: #6c63ff;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 1px;
 }
 
 .score-value {
-  font-size: 3rem;
+  font-size: 1.7rem;
   font-weight: 900;
   color: #4a42d6;
-  margin: 4px 0 8px;
+  line-height: 1;
 }
 
 .score-range {
-  font-size: 1.4rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #999;
 }
 
 .score-hint {
-  font-size: 0.85rem;
+  margin-left: auto;
+  font-size: 0.78rem;
   color: #777;
 }
 
-.summary-section {
-  margin-bottom: 20px;
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  table-layout: fixed;
+}
+
+.summary-table thead th {
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #888;
+  padding: 6px 8px;
+  border-bottom: 2px solid #eee;
+  text-transform: uppercase;
+}
+
+.summary-table tbody td {
+  padding: 8px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+  line-height: 1.45;
+}
+
+.summary-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.col-num {
+  width: 32px;
+  text-align: center;
+  color: #aaa;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.col-question {
+  color: #333;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.col-score {
+  width: 68px;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-num {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #4a42d6;
+}
+
+.score-denom {
+  font-size: 0.78rem;
+  color: #aaa;
+  margin-left: 2px;
+}
+
+.col-bar {
+  width: 38%;
+}
+
+.bar-track {
+  width: 100%;
+  height: 10px;
+  background: #ececf3;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6c63ff, #8a83ff);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.post-intro {
+  margin: 32px 0 20px;
+  padding-top: 24px;
+  border-top: 2px solid #eee;
+  text-align: center;
+}
+
+.post-intro h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+.post-intro p {
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.survey-section {
+  margin-bottom: 24px;
   padding: 20px 24px;
   border: 1px solid #f0f0f0;
   border-radius: 12px;
@@ -209,59 +523,63 @@ export default {
   font-size: 1rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   line-height: 1.5;
 }
 
-.answer-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.answer-tag {
-  font-size: 0.8rem;
-  color: #6c63ff;
-  background: #eeebff;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-weight: 600;
-}
-
-.answer-value {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #4a42d6;
-}
-
-.answer-scale {
-  font-size: 1rem;
-  color: #aaa;
-  font-weight: 500;
-}
-
-.label-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.78rem;
-  color: #888;
-  line-height: 1.5;
-}
-
-.label-cell {
+.slider-container {
   flex: 1;
 }
 
-.label-min { text-align: left; }
-.label-max { text-align: right; }
-.label-sep { color: #ccc; }
+.confirm-container {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirm-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  color: #6c63ff;
+  border: 1.5px solid #6c63ff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.confirm-btn:hover {
+  background: #f0f0ff;
+}
+
+.confirm-btn.confirmed {
+  background: #4caf50;
+  color: #fff;
+  border-color: #4caf50;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.confirm-btn .icon {
+  font-size: 1.1rem;
+}
+
+.confirm-btn.disabled,
+.confirm-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.confirm-btn.disabled:hover,
+.confirm-btn:disabled:hover {
+  background: #fff;
+}
 
 .submit-row {
   text-align: center;
-  margin-top: 40px;
-  margin-bottom: 16px;
+  margin-top: 32px;
 }
 
 .submit-btn {
@@ -269,22 +587,72 @@ export default {
   color: #fff;
   border: none;
   border-radius: 50px;
-  padding: 16px 64px;
-  font-size: 1.1rem;
+  padding: 14px 56px;
+  font-size: 1.05rem;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s, background-color 0.2s;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
   background-color: #5a52e0;
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(108, 99, 255, 0.35);
 }
 
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.validation-hint {
+  margin-bottom: 12px;
+  color: #e57373;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.error-msg {
+  margin-top: 16px;
+  color: #e53935;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
 .no-uid-notice {
-  padding: 80px 40px;
+  padding: 60px 32px;
   text-align: center;
   color: #888;
+}
+
+.spinner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 64px;
+  height: 64px;
+  border: 6px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.spinner-text {
+  margin-top: 20px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>
