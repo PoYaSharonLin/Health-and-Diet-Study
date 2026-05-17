@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import EntryPage from '../pages/EntryPage.vue';
 import PracticePage from '../pages/PracticePage.vue';
 import SurveyPage from '../pages/SurveyPage.vue';
 import SummaryPage from '../pages/SummaryPage.vue';
@@ -27,7 +28,8 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/practice',
+    name: 'Entry',
+    component: EntryPage,
   },
   {
     path: '/device-block',

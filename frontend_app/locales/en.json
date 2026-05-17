@@ -32,6 +32,10 @@
     "contactPrefix": "If you have any questions about this research, please contact the research team: "
   },
 
+  "entry": {
+    "preparing": "Preparing your survey, please wait…"
+  },
+
   "practice": {
     "title": "Slider Practice",
     "intro": {

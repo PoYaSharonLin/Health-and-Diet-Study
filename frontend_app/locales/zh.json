@@ -32,6 +32,10 @@
     "contactPrefix": "如對本研究有任何疑問，歡迎來信聯絡研究團隊："
   },
 
+  "entry": {
+    "preparing": "正在為您準備問卷，請稍候…"
+  },
+
   "practice": {
     "title": "滑桿操作練習",
     "intro": {

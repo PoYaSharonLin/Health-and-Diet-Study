@@ -5,6 +5,7 @@ require 'json'
 require_relative '../../infrastructure/database/orm/survey_session'
 require_relative './routes/survey'
 require_relative './routes/behavior'
+require_relative './routes/assignment'
 require 'rack/ssl-enforcer'
 
 module SurveyTracker
@@ -42,6 +43,11 @@ module SurveyTracker
         # Behavior event ingestion: POST /api/behavior/:respondent_id/events
         r.on 'behavior' do
           r.run Routes::Behavior
+        end
+
+        # Condition assignment: POST /api/assignment/next
+        r.on 'assignment' do
+          r.run Routes::Assignment
         end
 
         r.get do

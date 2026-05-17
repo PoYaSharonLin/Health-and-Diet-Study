@@ -9,10 +9,18 @@ module SurveyTracker
           Orm::SurveySession.first(respondent_id:)
         end
 
-        # Idempotent: returns existing session if respondent_id already recorded
+        # Idempotent: returns existing session if respondent_id already recorded.
+        # Backfills original_url / metadata when the existing row has them blank
+        # (e.g. when the row was pre-created by the condition assignment step).
         def find_or_create(respondent_id:, original_url: nil, metadata: nil)
           existing = find_by_respondent_id(respondent_id)
-          return existing if existing
+          if existing
+            updates = {}
+            updates[:original_url] = original_url if existing.original_url.nil? && original_url
+            updates[:metadata]     = metadata     if existing.metadata.nil?     && metadata
+            existing.update(updates) unless updates.empty?
+            return existing
+          end
 
           Orm::SurveySession.create(
             respondent_id:,
@@ -20,6 +28,39 @@ module SurveyTracker
             metadata:,
             started_at: Time.now.utc
           )
+        end
+
+        # Assigns the least-used condition among `valid_conditions` to
+        # respondent_id, creating a session row if none exists. Idempotent:
+        # if respondent_id already has a condition, returns it unchanged.
+        # Wrapped in a transaction so concurrent assignments serialize and
+        # cannot pick the same bucket from a stale count snapshot.
+        def find_or_assign_condition(respondent_id:, valid_conditions:)
+          Orm::SurveySession.db.transaction do
+            existing = find_by_respondent_id(respondent_id)
+            return existing.condition if existing&.condition
+
+            counts = Orm::SurveySession
+                     .where(condition: valid_conditions)
+                     .group_and_count(:condition)
+                     .to_hash(:condition, :count)
+
+            min_count  = valid_conditions.map { |c| counts[c] || 0 }.min
+            candidates = valid_conditions.select { |c| (counts[c] || 0) == min_count }
+            chosen     = candidates.sample
+
+            if existing
+              existing.update(condition: chosen)
+            else
+              Orm::SurveySession.create(
+                respondent_id: respondent_id,
+                condition:     chosen,
+                started_at:    Time.now.utc
+              )
+            end
+
+            chosen
+          end
         end
 
         def update_ended_at(respondent_id:)
