@@ -8,7 +8,7 @@
  * at least 700 px and the long side is at least 1000 px.
  */
 
-const MIN_SHORT_SIDE = 700;
+const MIN_SHORT_SIDE = 600;
 const MIN_LONG_SIDE  = 1000;
 
 export function isMobileOrTablet() {

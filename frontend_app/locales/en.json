@@ -28,6 +28,12 @@
   "deviceBlock": {
     "title": "Please use a computer to complete this survey",
     "lead": "This survey does not support phones or tablets. Please reopen the invitation link on a desktop or laptop computer to continue.",
+    "zoomTitle": "If you are on a computer but still see this page",
+    "zoomLead": "Your browser window or system display scaling may be making the viewport too small. Try zooming the page out to about 80–90% with the shortcut below, then click \"Retry\":",
+    "zoomWindows": "Hold Ctrl and press - (each press zooms out 10%)",
+    "zoomMac": "Hold ⌘ (Command) and press - (each press zooms out 10%)",
+    "zoomReset": "To restore the default zoom: Ctrl + 0 on Windows, ⌘ + 0 on macOS.",
+    "retry": "Retry",
     "action": "If you do not have access to a computer at the moment, please close this page. Thank you for your willingness to take part in this research.",
     "contactPrefix": "If you have any questions about this research, please contact the research team: "
   },
