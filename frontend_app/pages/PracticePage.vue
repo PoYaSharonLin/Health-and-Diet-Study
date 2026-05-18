@@ -78,7 +78,7 @@ export default {
   components: { SliderBar },
 
   data() {
-    const flags = session.getFlags();
+    const flags = session.resolveFlags();
     const sliderDefault = flags?.hasRAM ? 0 : 9;
     return {
       userId:      null,

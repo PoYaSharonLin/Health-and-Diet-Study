@@ -109,6 +109,20 @@ const session = {
     return { condition: c, ...FLAGS_BY_CONDITION[c] };
   },
 
+  // URL ?condition first, then localStorage. Safe to call from Vue data()
+  // before session.init() has run (i.e. before the URL param is persisted).
+  resolveCondition() {
+    const urlCond = new URLSearchParams(window.location.search).get('condition');
+    if (isConditionValid(urlCond)) return urlCond;
+    return this.getCondition();
+  },
+
+  resolveFlags() {
+    const c = this.resolveCondition();
+    if (!isConditionValid(c)) return null;
+    return { condition: c, ...FLAGS_BY_CONDITION[c] };
+  },
+
   getShareUrl() {
     return localStorage.getItem('survey_share_url') || null;
   },

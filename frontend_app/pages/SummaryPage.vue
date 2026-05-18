@@ -142,6 +142,8 @@ export default {
   components: { BehaviorTracker, SliderBar },
 
   data() {
+    const flags = session.resolveFlags();
+    const postDefault = flags?.hasRAM ? SLIDER_MIN : SLIDER_MAX;
     return {
       userId:     null,
       dietary:    [],
@@ -150,7 +152,7 @@ export default {
       errorMsg:   '',
       sliderMin:  SLIDER_MIN,
       sliderMax:  SLIDER_MAX,
-      postAnswers:       Array(3).fill(SLIDER_MIN),
+      postAnswers:       Array(3).fill(postDefault),
       postConfirmed:     Array(3).fill(false),
       postSliderTouched: Array(3).fill(false),
     };

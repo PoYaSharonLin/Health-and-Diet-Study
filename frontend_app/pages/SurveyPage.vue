@@ -85,7 +85,7 @@ export default {
   components: { BehaviorTracker, SliderBar },
 
   data() {
-    const flags = session.getFlags();
+    const flags = session.resolveFlags();
     const sliderDefault = flags?.hasRAM ? 0 : 9;
     return {
       userId:    null,
