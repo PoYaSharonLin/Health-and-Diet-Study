@@ -110,14 +110,14 @@ export default {
     confirm() {
       if (this.confirmed || !this.sliderMoved) return;
       this.confirmed = true;
-      localStorage.setItem('survey_practice_done', '1');
+      sessionStorage.setItem('practice_done', '1');
     },
 
     goNext() {
       if (!this.confirmed) return;
       const uid   = session.getUserId();
       const query = uid ? `?uid=${encodeURIComponent(uid)}` : '';
-      this.$router.push(`/survey${query}`);
+      this.$router.push(`/susceptibility${query}`);
     },
   },
 };

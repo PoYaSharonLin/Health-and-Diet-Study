@@ -42,17 +42,150 @@
     "preparing": "Preparing your survey, please wait…"
   },
 
+  "diseases": {
+    "hypertension":      "Hypertension",
+    "diabetes":          "Diabetes",
+    "underweight":       "Underweight",
+    "osteoporosis":      "Osteoporosis",
+    "gastric_ulcer":     "Gastric ulcer",
+    "constipation":      "Constipation",
+    "bloating":          "Bloating",
+    "gerd":              "Gastroesophageal reflux disease (GERD)",
+    "skin_disease":      "Skin disease",
+    "allergic_rhinitis": "Allergic rhinitis",
+    "joint_pain":        "Joint pain",
+    "gout":              "Gout"
+  },
+
+  "susceptibility": {
+    "title": "The Role of Self-Reporting in Health",
+    "woEO": {
+      "body": "Self-reporting is necessary for certain health information because it cannot be automatically monitored or detected, such as dietary intake, physical activity, and symptoms. Although self-reporting can be subjective and prone to memory bias, it allows individuals to provide information on their experiences and behaviors, which can inform healthcare professionals and researchers about their health status and guide interventions."
+    },
+    "wEO": {
+      "title": "What is \"honest reporting\"?",
+      "lead": "Have you ever shared the truth about your dietary habits with people around you, such as your doctor, family, or friends? You may not realize it yet, but every honest answer is a powerful step toward your ideal health.",
+      "engagement": "Next, we will share some information, so if you're feeling a bit tired right now, please stay engaged as much as possible!",
+      "scenarioTitle": "Scenario: Honest reporting and Health",
+      "scenarioSteps": [
+        "One day, feeling eager to take charge of your wellbeing, you walk into the hospital to see a doctor, ready to make progress.",
+        "After the consultation, the doctor mentions that your physical condition is closely related to your recent diet and asks what you have been eating lately.",
+        "In reality, you've been filling up on cookies, sweets, and instant noodles recently due to laziness.",
+        "You pause, thinking that if you share the truth honestly, you're excited that the doctor will be positive, and think that it's natural for you to step closer to the version of yourself you've been hoping to become.",
+        "With that in mind, you say that you've been mostly indulging in snacks recently, with only occasional healthy meals.",
+        "The doctor understands your real situation and prescribes relevant medication and medical advice based on that, helping you to align your health goals."
+      ]
+    }
+  },
+
+  "severity": {
+    "title": "Self-Reporting in Practice",
+    "woEO": {
+      "framing": "Self-reporting plays out across many small moments in everyday life — a logged meal, a noted symptom, a recalled walk. On the next page, we'll look at the tools that help people do this consistently and accurately.",
+      "heading": "Self-Reporting Tools",
+      "intro": "Here are some popular methods used worldwide for self-reporting:",
+      "tools": [
+        { "label": "Paper diaries",     "body": "Patients record their daily activities, such as food intake, physical activity, and symptom severity, in a physical notebook or diary." },
+        { "label": "Electronic diaries", "body": "Similar to paper diaries, but patients use electronic devices, such as smartphones or tablets, to record their activities." },
+        { "label": "Questionnaires",     "body": "Patients answer a set of standardized questions designed to capture specific health-related information, such as quality of life, mood, or pain intensity." },
+        { "label": "Wearable devices",   "body": "Electronic devices that patients wear on their bodies, such as fitness trackers or smartwatches, that track various health-related metrics, such as heart rate, sleep quality, and steps taken." },
+        { "label": "Mobile apps",        "body": "A variety of mobile apps allow patients to track their health-related behaviors, such as food intake and physical activity, and sync the data with their healthcare provider." }
+      ],
+      "outro": "In addition, it is recommended to consider the objectives and target population before choosing the type of tool, in order to maximize its effectiveness."
+    },
+    "wEO": {
+      "heading": "Rewards of Honest Reporting (Using Honest Reporting of Diet as an Example)",
+      "section1": {
+        "title": "Strong Mental Health and Healthy Eating Habits",
+        "body":  "Honest reporting of your diet can bring positive feelings and even strengthen your mental health, further nurturing feelings of confidence and peace about your body image and eating habits. This may contribute to the development or improvement of your food choices — eating enough fruit, consuming whole-grain foods, eating vegetables, etc. — providing a stronger sense of mastery over food. These habits can create a virtuous cycle where honest reporting compounds."
+      },
+      "section2": {
+        "title": "Receiving Tailored Guidance and Unlocking Health Gains",
+        "body":  "When you honestly report your diet, let's consider the example of a doctor: they can precisely tailor your medication and recommendations thanks to the fully accurate information. Better still, your body may fully benefit from these adjustments, unlocking several gains — including smooth food–medication compatibility, balanced nutrition, stable blood-sugar levels, lower risk of hypertension, and steady improvement of your overall condition."
+      }
+    }
+  },
+
+  "efficacy": {
+    "title": "How to Unlock the Benefits of Honest Reporting of Your Eating Habits",
+    "responseEfficacy": {
+      "heading": "Be Honest with Yourself First",
+      "body":    "Each time you share your truth, it's a gift to your own well-being and opens up new opportunities for growth. Only when you embrace the truth can you truly unlock the full potential of your health. Let honesty bring you closer to achieving a healthy and fulfilling life."
+    },
+    "selfEfficacy": {
+      "heading": "Embrace Honest Reporting Motivation",
+      "items": [
+        { "label": "Pause and Reflect",            "body": "Stop for a moment and take a deep breath." },
+        { "label": "Recall Your Why",              "body": "Remind yourself of why you want to embrace honest reporting. Speak affirmations like \"I am willing to do what it takes to live the life I want.\"" },
+        { "label": "Reach Out to Your Support System", "body": "Find people who can offer helpful suggestions to help you get back on track." }
+      ]
+    }
+  },
+
+  "doctorPreference": {
+    "title": "Doctor Preferences",
+    "lead":  "What type of doctors are you looking for regarding {disease}? Please provide your preferences, and we will recommend suitable doctors from our network.",
+    "questions": [
+      {
+        "key": "style",
+        "text": "Do you have a preference for the communication style of the doctors?",
+        "options": [
+          { "value": "direct",  "label": "Direct"  },
+          { "value": "tactful", "label": "Tactful" }
+        ]
+      },
+      {
+        "key": "pace",
+        "text": "Do you prefer a particular pace for the medical consultations?",
+        "options": [
+          { "value": "efficient", "label": "Efficient" },
+          { "value": "leisured",  "label": "Leisured"  }
+        ]
+      },
+      {
+        "key": "info",
+        "text": "What specific information about {disease} would you like to know more about?",
+        "options": [
+          { "value": "causes",     "label": "Causes of the condition"  },
+          { "value": "preventive", "label": "Subsequent preventive advice" }
+        ]
+      }
+    ],
+    "validationHint": "Please answer all 3 questions before continuing."
+  },
+
+  "doctorRecommendation": {
+    "title": "Based on your preferences, we recommend Dr. Zhang for your treatment",
+    "body":  "During Dr. Zhang's leisured consultation, she will provide medication for treating {disease}, guidance on preventive measures in daily life, and information about causes of the condition.",
+    "note":  "Please note: Dr. Zhang emphasizes a fundamental treatment approach, and she may have strict expectations regarding your lifestyle habits. It is preferred that you have already made some improvements in your diet and lifestyle habits before seeking treatment, to avoid unnecessary utilization of healthcare resources.",
+    "reminderHeading": "Reminder",
+    "reminders": [
+      "Dr. Zhang will ask you to report your lifestyle and dietary behaviors during the consultation to facilitate assessment.",
+      "Adhere to Dr. Zhang's recommendations during your next visit. If non-compliant, you will be asked to make improvements before rescheduling the appointment."
+    ],
+    "imageAlt": "Female doctor in blue scrubs"
+  },
+
+  "consultationReminder": {
+    "title": "Initial Consultation Reminder: Report your dietary behaviors over the past week.",
+    "intro": "On the next page, please provide your dietary behaviors in the past week to facilitate Dr. Zhang's assessment of your {disease} issue.",
+    "explain": "Afterward, Dr. Zhang will evaluate whether your dietary behaviors can improve or worsen your {disease} based on your answers.",
+    "sliderHeading": "How to use the slider",
+    "sliderInstructions": [
+      "On the next page, please adjust the slider according to your level of agreement with the statements.",
+      "You must use the slider to answer the questions.",
+      "If your answer aligns with the initial position of the slider, please move it slightly and then back to the initial position to help the system recognize that you have responded."
+    ],
+    "imageAlt": "Doctor with stethoscope holding a tablet across from a patient"
+  },
+
   "practice": {
     "title": "Slider Practice",
     "intro": {
-      "lead": "When answering, move the slider to your desired position and click the check mark on the bottom right to confirm. Please note, {strong}.",
-      "leadStrong": "your answer cannot be modified once confirmed"
-    },
-    "variantPlaceholder": {
-      "woEOwoRAM": "[woEO-woRAM | Control] Placeholder for the production-version instructions and image.",
-      "wEOwoRAM":  "[wEO-woRAM | with Encouragement Offering, no RAM] Placeholder for the production-version instructions and image (including encouragement message).",
-      "woEOwRAM":  "[woEO-wRAM | no Encouragement Offering, with RAM] Placeholder for the production-version instructions and image (including Response Activation Model prompts).",
-      "wEOwRAM":   "[wEO-wRAM | with Encouragement Offering, with RAM] Placeholder for the production-version instructions and image (including encouragement message and Response Activation Model prompts)."
+      "lead": "Each question's slider starts at a fixed default position. Drag the slider to the answer you want — and {strong}, you must still tap that spot once so the system can register your response. Then click the ✓ button on the bottom-right to confirm. Once confirmed, your answer cannot be modified.",
+      "leadStrong": "even if the default position already matches your answer",
+      "ramNoticeWoRAM": "On this study, every slider starts at the right side. Try answering the practice question below — including a tap on the slider even when the default already matches your answer.",
+      "ramNoticeWRAM":  "On this study, every slider starts at the left side. Try answering the practice question below — including a tap on the slider even when the default already matches your answer."
     },
     "question": "Do you understand how the slider works? *",
     "minLabel": "No",

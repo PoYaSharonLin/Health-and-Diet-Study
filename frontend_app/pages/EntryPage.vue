@@ -10,7 +10,7 @@ import axios from 'axios';
 import { isMobileOrTablet } from '@/lib/device';
 
 const MOONBEAR_PRE_SURVEY =
-  'https://moonbear.herokuapp.com/onlinesurvey/8696ed68-c91e-4986-9535-fc957ae7b3b5/01c432a6-29d1-4e90-abbe-5ed53256eaa7';
+  'https://moonbear.herokuapp.com/onlinesurvey/8696ed68-c91e-4986-9535-fc957ae7b3b5/8dc8ca78-65e0-4e86-8ccf-dc4c7dbb7415';
 const USER_ID_KEY = 'survey_user_id';
 
 export default {

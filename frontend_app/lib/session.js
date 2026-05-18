@@ -12,8 +12,15 @@ import axios from 'axios';
 const USER_ID_KEY    = 'survey_user_id';
 const ORIG_URL_KEY   = 'survey_original_url';
 const CONDITION_KEY  = 'survey_condition';
+const DISEASE_KEY    = 'survey_disease';
 
 export const VALID_CONDITIONS = ['woEO-woRAM', 'wEO-woRAM', 'woEO-wRAM', 'wEO-wRAM'];
+
+export const VALID_DISEASES = [
+  'hypertension', 'diabetes', 'underweight', 'osteoporosis',
+  'gastric_ulcer', 'constipation', 'bloating', 'gerd',
+  'skin_disease', 'allergic_rhinitis', 'joint_pain', 'gout',
+];
 
 const FLAGS_BY_CONDITION = {
   'woEO-woRAM': { hasEO: false, hasRAM: false },
@@ -26,6 +33,12 @@ export function isConditionValid(c) {
   return typeof c === 'string' && VALID_CONDITIONS.includes(c);
 }
 
+function normalizeDisease(raw) {
+  if (typeof raw !== 'string') return null;
+  const key = raw.trim().toLowerCase().replace(/[\s-]+/g, '_');
+  return VALID_DISEASES.includes(key) ? key : null;
+}
+
 const session = {
   /**
    * Called on app boot. Extracts uid from URL if present,
@@ -33,9 +46,10 @@ const session = {
    * Returns the user_id string or null if none found.
    */
   async init() {
-    const params  = new URLSearchParams(window.location.search);
-    const urlUid  = params.get('uid');
-    const urlCond = params.get('condition');
+    const params     = new URLSearchParams(window.location.search);
+    const urlUid     = params.get('uid');
+    const urlCond    = params.get('condition');
+    const urlDisease = params.get('disease');
 
     if (urlUid) {
       localStorage.setItem(USER_ID_KEY, urlUid);
@@ -43,6 +57,10 @@ const session = {
     }
     if (urlCond && isConditionValid(urlCond)) {
       localStorage.setItem(CONDITION_KEY, urlCond);
+    }
+    const normalizedDisease = normalizeDisease(urlDisease);
+    if (normalizedDisease) {
+      localStorage.setItem(DISEASE_KEY, normalizedDisease);
     }
 
     const userId = this.getUserId();
@@ -59,6 +77,7 @@ const session = {
           viewport_width:  window.innerWidth,
           viewport_height: window.innerHeight,
           condition:       this.getCondition(),
+          disease:         this.getDisease(),
         },
       });
 
@@ -80,6 +99,10 @@ const session = {
     return localStorage.getItem(CONDITION_KEY) || null;
   },
 
+  getDisease() {
+    return localStorage.getItem(DISEASE_KEY) || null;
+  },
+
   getFlags() {
     const c = this.getCondition();
     if (!isConditionValid(c)) return null;
@@ -94,6 +117,7 @@ const session = {
     localStorage.removeItem(USER_ID_KEY);
     localStorage.removeItem(ORIG_URL_KEY);
     localStorage.removeItem(CONDITION_KEY);
+    localStorage.removeItem(DISEASE_KEY);
     localStorage.removeItem('survey_share_url');
   },
 };
