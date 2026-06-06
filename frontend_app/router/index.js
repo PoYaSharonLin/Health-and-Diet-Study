@@ -60,14 +60,13 @@ router.beforeEach((to) => {
     return { name: 'DeviceBlock' };
   }
 
-  // Condition gate: every survey-flow route must have a valid ?condition,
-  // either fresh in the URL or previously stored in localStorage.
+  // Condition gate: every survey-flow route must resolve to a valid condition,
+  // either fresh in the URL or previously stored in localStorage. An invalid
+  // ?condition in the URL (e.g. an unsubstituted placeholder appended by an
+  // external survey tool's redirect) is ignored in favour of the stored one.
   if (CONDITION_PROTECTED.includes(to.name)) {
     const urlCond = to.query.condition;
-    if (urlCond !== undefined && !isConditionValid(urlCond)) {
-      return { name: 'Invalid' };
-    }
-    const effective = urlCond ?? session.getCondition();
+    const effective = isConditionValid(urlCond) ? urlCond : session.getCondition();
     if (!isConditionValid(effective)) {
       return { name: 'Invalid' };
     }
