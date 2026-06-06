@@ -9,8 +9,7 @@
 import axios from 'axios';
 import { isMobileOrTablet } from '@/lib/device';
 
-const MOONBEAR_PRE_SURVEY =
-  'https://moonbear.herokuapp.com/onlinesurvey/8696ed68-c91e-4986-9535-fc957ae7b3b5/b245db50-a6fb-4845-abb2-2371f2fe0edb';
+const PRE_SURVEY_URL = 'https://www.surveycake.com/s/mYWoK';
 const USER_ID_KEY = 'survey_user_id';
 
 export default {
@@ -30,7 +29,7 @@ export default {
       const condition = data?.data?.condition;
       if (!condition) throw new Error('Missing condition in response');
 
-      const url = new URL(MOONBEAR_PRE_SURVEY);
+      const url = new URL(PRE_SURVEY_URL);
       url.searchParams.set('uid', uid);
       url.searchParams.set('condition', condition);
       window.location.replace(url.toString());

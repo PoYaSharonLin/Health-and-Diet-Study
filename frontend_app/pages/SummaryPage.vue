@@ -299,13 +299,11 @@ export default {
 
         this.submitted = true;
 
-        const moonbearUrl = new URL(
-          'https://moonbear.herokuapp.com/onlinesurvey/f922a475-4ef3-4d3a-992d-996b507f732c/d4dbab7c-c7c9-43c4-819f-27494691bb91'
-        );
-        moonbearUrl.searchParams.set('uid', this.userId);
+        const postSurveyUrl = new URL('https://www.surveycake.com/s/yXQ6M');
+        postSurveyUrl.searchParams.set('uid', this.userId);
         const condition = session.getCondition();
-        if (condition) moonbearUrl.searchParams.set('condition', condition);
-        window.location.href = moonbearUrl.toString();
+        if (condition) postSurveyUrl.searchParams.set('condition', condition);
+        window.location.href = postSurveyUrl.toString();
       } catch (err) {
         console.error('[summary submit] error:', err);
         const elapsed = Date.now() - startedAt;
