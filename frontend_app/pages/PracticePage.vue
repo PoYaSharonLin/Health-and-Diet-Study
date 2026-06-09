@@ -38,6 +38,29 @@
             </div>
           </div>
 
+          <section class="please-note" data-track="practice-please-note">
+            <div class="please-note-header">
+              <svg class="warning-icon" viewBox="0 0 64 60" aria-hidden="true">
+                <path d="M32 4 C 34 4 35.5 5 36.5 6.8 L 60 50 C 61 52 60.5 54.5 59 55.5 C 58 56 57 56 56 56 L 8 56 C 6 56 4.5 55 4 53.5 C 3.5 52 3.8 50.5 4 50 L 27.5 6.8 C 28.5 5 30 4 32 4 Z" fill="#F5C518"/>
+                <rect x="29" y="20" width="6" height="20" rx="3" fill="#1a1a1a"/>
+                <circle cx="32" cy="46" r="3.5" fill="#1a1a1a"/>
+              </svg>
+              <h2 class="please-note-title">{{ $t('practice.pleaseNote.title') }}</h2>
+            </div>
+            <div class="please-note-body">
+              <i18n-t keypath="practice.pleaseNote.lead" tag="p" class="please-note-lead" scope="global">
+                <template #strong><strong>{{ $t('practice.pleaseNote.leadStrong') }}</strong></template>
+              </i18n-t>
+              <p class="please-note-points-header">{{ $t('practice.pleaseNote.pointsHeader') }}</p>
+              <ol class="please-note-points">
+                <li>{{ $t('practice.pleaseNote.point1') }}</li>
+                <li>{{ $t('practice.pleaseNote.point2') }}</li>
+                <li>{{ $t('practice.pleaseNote.point3') }}</li>
+              </ol>
+              <p class="please-note-closing">{{ $t('practice.pleaseNote.closing') }}</p>
+            </div>
+          </section>
+
           <div class="next-container">
             <button
               class="next-btn"
@@ -223,6 +246,80 @@ export default {
 .confirm-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.please-note {
+  margin-top: 32px;
+  padding: 32px 28px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+}
+
+.please-note-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.warning-icon {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+}
+
+.please-note-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #e53935;
+  letter-spacing: 0.04em;
+}
+
+.please-note-body {
+  padding-top: 24px;
+  font-size: 0.98rem;
+  line-height: 1.85;
+  color: #333;
+  text-align: left;
+}
+
+.please-note-lead {
+  margin: 0 0 16px;
+}
+
+.please-note-lead :deep(strong) {
+  font-weight: 700;
+  color: #222;
+}
+
+.please-note-points-header {
+  margin: 0 0 8px;
+}
+
+.please-note-points {
+  margin: 0 0 20px;
+  padding-left: 1.6em;
+  font-weight: 700;
+  color: #222;
+}
+
+.please-note-points li {
+  margin-bottom: 6px;
+}
+
+.please-note-closing {
+  margin: 24px 0 0;
+}
+
+@media (max-width: 560px) {
+  .please-note { padding: 24px 18px; }
+  .please-note-header { gap: 20px; padding-bottom: 20px; }
+  .warning-icon { width: 72px; height: 72px; }
+  .please-note-title { font-size: 1.5rem; }
 }
 
 .next-container {

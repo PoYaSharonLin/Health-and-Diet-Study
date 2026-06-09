@@ -183,13 +183,21 @@
     "title": "Slider Practice",
     "intro": {
       "lead": "Each question's slider starts at a fixed default position. Drag the slider to the answer you want — and {strong}, you must still tap that spot once so the system can register your response. Then click the ✓ button on the bottom-right to confirm. Once confirmed, your answer cannot be modified.",
-      "leadStrong": "even if the default position already matches your answer",
-      "ramNoticeWoRAM": "On this study, every slider starts at the right side. Try answering the practice question below — including a tap on the slider even when the default already matches your answer.",
-      "ramNoticeWRAM":  "On this study, every slider starts at the left side. Try answering the practice question below — including a tap on the slider even when the default already matches your answer."
+      "leadStrong": "even if the default position already matches your answer"
     },
     "question": "Do you understand how the slider works? *",
     "minLabel": "No",
-    "maxLabel": "Yes"
+    "maxLabel": "Yes",
+    "pleaseNote": {
+      "title": "Please Note",
+      "lead": "In the following, we will have {strong} for you. Please read it carefully.",
+      "leadStrong": "important information",
+      "pointsHeader": "Here are a few points to note:",
+      "point1": "After reading the information, we will ask you questions related to it.",
+      "point2": "Our questionnaire does not allow going back to the previous page, so you cannot revisit or modify your answers.",
+      "point3": "Later, you will receive a positive or negative assessment based on your answers.",
+      "closing": "Next, please read each page carefully to avoid missing any important information and to protect your rights. Thank you~"
+    }
   },
 
   "survey": {
