@@ -64,8 +64,10 @@
     },
     "wEO": {
       "title": "What is \"honest reporting\"?",
-      "lead": "Have you ever shared the truth about your dietary habits with people around you, such as your doctor, family, or friends? You may not realize it yet, but every honest answer is a powerful step toward your ideal health.",
-      "engagement": "Next, we will share some information, so if you're feeling a bit tired right now, please stay engaged as much as possible!",
+      "lead": "Have you ever shared the truth about your dietary habits with people around you, such as your doctor, family, or friends? You may not realize it yet, but every honest answer is a {strong} toward your ideal health.",
+      "leadStrong": "powerful step",
+      "engagement": "Next, we will share some information, so if you're feeling a bit tired right now, please {strong} as much as possible!",
+      "engagementStrong": "stay engaged",
       "scenarioTitle": "Scenario: Honest reporting and Health",
       "scenarioSteps": [
         "One day, feeling eager to take charge of your wellbeing, you walk into the hospital to see a doctor, ready to make progress.",
@@ -73,7 +75,7 @@
         "In reality, you've been filling up on cookies, sweets, and instant noodles recently due to laziness.",
         "You pause, thinking that if you share the truth honestly, you're excited that the doctor will be positive, and think that it's natural for you to step closer to the version of yourself you've been hoping to become.",
         "With that in mind, you say that you've been mostly indulging in snacks recently, with only occasional healthy meals.",
-        "The doctor understands your real situation and prescribes relevant medication and medical advice based on that, helping you to align your health goals."
+        "It is very likely that the doctor understands your real situation and prescribes relevant medication and medical advice based on that, helping you to align your health goals."
       ]
     }
   },
@@ -97,23 +99,28 @@
       "heading": "Rewards of Honest Reporting (Using Honest Reporting of Diet as an Example)",
       "section1": {
         "title": "Strong Mental Health and Healthy Eating Habits",
-        "body":  "Honest reporting of your diet can bring positive feelings and even strengthen your mental health, further nurturing feelings of confidence and peace about your body image and eating habits. This may contribute to the development or improvement of your food choices — eating enough fruit, consuming whole-grain foods, eating vegetables, etc. — providing a stronger sense of mastery over food. These habits can create a virtuous cycle where honest reporting compounds."
+        "body":  "Honest reporting of your diet can bring positive feelings and even strengthen your mental health, further nurturing feelings of confidence and peace about your body image and eating habits. This may contribute to the development or improvement of your food choices — {strong1} — providing a stronger sense of mastery over food. These habits can create a {strong2} where honest reporting compounds.",
+        "bodyStrong1": "eating enough fruit, consuming whole-grain foods, etc.",
+        "bodyStrong2": "virtuous cycle"
       },
       "section2": {
         "title": "Receiving Tailored Guidance and Unlocking Health Gains",
-        "body":  "When you honestly report your diet, let's consider the example of a doctor: they can precisely tailor your medication and recommendations thanks to the fully accurate information. Better still, your body may fully benefit from these adjustments, unlocking several gains — including smooth food–medication compatibility, balanced nutrition, stable blood-sugar levels, lower risk of hypertension, and steady improvement of your overall condition."
+        "body":  "When you honestly report your diet, let's consider the example of a doctor: they can {strong1} thanks to the fully accurate information. Better still, your body may fully benefit from these adjustments, unlocking several gains — including {strong2}.",
+        "bodyStrong1": "precisely tailor your medication and recommendations",
+        "bodyStrong2": "smooth food–medication compatibility, balanced nutrition, stable blood-sugar levels, lower risk of hypertension, and steady improvement of your overall condition"
       }
     }
   },
 
   "efficacy": {
-    "title": "How to Engage in Honest Reporting of Your Eating Habits",
+    "title": "How to {strong} Honest Reporting of Your Eating Habits",
+    "titleStrong": "Engage in",
     "responseEfficacy": {
       "heading": "Be Honest with Yourself First",
       "body":    "Each time you are honest to yourself, it's a gift to your own well-being and opens up new opportunities for growth. Only when you embrace the truth can you truly take control of your health. Let honesty bring you closer to achieving a healthy and fulfilling life."
     },
     "selfEfficacy": {
-      "heading": "Embrace Honest Reporting Motivation",
+      "heading": "Embrace Honest Reporting Motivation Easily",
       "items": [
         { "label": "Pause and Reflect",            "body": "Stop for a moment and take a deep breath." },
         { "label": "Recall Your Why",              "body": "Remind yourself of why you want to embrace honest reporting. Speak affirmations like \"I am willing to do what it takes to live the life I want.\"" },

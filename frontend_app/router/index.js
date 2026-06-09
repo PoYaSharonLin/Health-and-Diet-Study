@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import EntryPage from '../pages/EntryPage.vue';
 import SusceptibilityPage from '../pages/SusceptibilityPage.vue';
 import SeverityPage from '../pages/SeverityPage.vue';
-import EfficacyPage from '../pages/EfficacyPage.vue';
 import DoctorPreferencePage from '../pages/DoctorPreferencePage.vue';
 import DoctorRecommendationPage from '../pages/DoctorRecommendationPage.vue';
 import ConsultationReminderPage from '../pages/ConsultationReminderPage.vue';
@@ -15,7 +14,7 @@ import session, { isConditionValid } from '../lib/session';
 import { isMobileOrTablet } from '../lib/device';
 
 const CONDITION_PROTECTED = [
-  'Susceptibility', 'Severity', 'Efficacy',
+  'Susceptibility', 'Severity',
   'DoctorPreference', 'DoctorRecommendation', 'ConsultationReminder',
   'Practice', 'Survey', 'Summary',
 ];
@@ -26,8 +25,7 @@ const CONDITION_PROTECTED = [
 const SEQUENCE_GATE = {
   Susceptibility:       { flag: 'practice_done',               fallback: 'Practice'             },
   Severity:             { flag: 'susceptibility_done',         fallback: 'Susceptibility'       },
-  Efficacy:             { flag: 'severity_done',               fallback: 'Severity'             },
-  DoctorPreference:     { flag: 'efficacy_done',               fallback: 'Efficacy'             },
+  DoctorPreference:     { flag: 'severity_done',               fallback: 'Severity'             },
   DoctorRecommendation: { flag: 'doctor_preference_done',      fallback: 'DoctorPreference'     },
   ConsultationReminder: { flag: 'doctor_recommendation_done',  fallback: 'DoctorRecommendation' },
   Survey:               { flag: 'consultation_reminder_done',  fallback: 'ConsultationReminder' },
@@ -37,7 +35,6 @@ const routes = [
   { path: '/',                       name: 'Entry',                component: EntryPage },
   { path: '/susceptibility',         name: 'Susceptibility',       component: SusceptibilityPage },
   { path: '/severity',               name: 'Severity',             component: SeverityPage },
-  { path: '/efficacy',               name: 'Efficacy',             component: EfficacyPage },
   { path: '/doctor-preference',      name: 'DoctorPreference',     component: DoctorPreferencePage },
   { path: '/doctor-recommendation',  name: 'DoctorRecommendation', component: DoctorRecommendationPage },
   { path: '/consultation-reminder',  name: 'ConsultationReminder', component: ConsultationReminderPage },

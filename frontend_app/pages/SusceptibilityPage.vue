@@ -1,31 +1,49 @@
 <template>
   <ContentLayout :title="$t('susceptibility.title')" @next="goNext">
-    <img
-      :src="image"
-      :alt="$t('susceptibility.title')"
-      class="hero-image"
-      data-track="susceptibility-image"
-    />
-
-    <p v-if="!hasEO" class="body" data-track="susceptibility-body">
-      {{ $t('susceptibility.woEO.body') }}
-    </p>
+    <template v-if="!hasEO">
+      <img
+        :src="image"
+        :alt="$t('susceptibility.title')"
+        class="hero-image"
+        data-track="susceptibility-image"
+      />
+      <p class="body" data-track="susceptibility-body">
+        {{ $t('susceptibility.woEO.body') }}
+      </p>
+    </template>
 
     <template v-else>
       <h2 class="section-h2" data-track="susceptibility-weo-title">
         {{ $t('susceptibility.wEO.title') }}
       </h2>
-      <p class="body" data-track="susceptibility-weo-lead">
-        {{ $t('susceptibility.wEO.lead') }}
-      </p>
-      <p class="callout" data-track="susceptibility-weo-engagement">
-        {{ $t('susceptibility.wEO.engagement') }}
-      </p>
+      <i18n-t
+        keypath="susceptibility.wEO.lead"
+        tag="p"
+        class="body"
+        scope="global"
+        data-track="susceptibility-weo-lead"
+      >
+        <template #strong><strong>{{ $t('susceptibility.wEO.leadStrong') }}</strong></template>
+      </i18n-t>
+      <i18n-t
+        keypath="susceptibility.wEO.engagement"
+        tag="p"
+        class="body"
+        scope="global"
+        data-track="susceptibility-weo-engagement"
+      >
+        <template #strong><strong>{{ $t('susceptibility.wEO.engagementStrong') }}</strong></template>
+      </i18n-t>
+
+      <hr class="scenario-divider" />
 
       <h3 class="section-h3">{{ $t('susceptibility.wEO.scenarioTitle') }}</h3>
-      <ol class="scenario" data-track="susceptibility-weo-scenario">
-        <li v-for="(step, i) in scenarioSteps" :key="i">{{ step }}</li>
-      </ol>
+      <div class="scenario" data-track="susceptibility-weo-scenario">
+        <template v-for="(step, i) in scenarioSteps" :key="i">
+          <div v-if="i > 0" class="scenario-arrow" aria-hidden="true">↓</div>
+          <p class="scenario-step">{{ step }}</p>
+        </template>
+      </div>
     </template>
   </ContentLayout>
 </template>
@@ -71,44 +89,35 @@ export default {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 .body { margin: 0 0 20px; font-size: 1rem; line-height: 1.75; color: #333; }
-.callout {
-  background: #fff8e1;
-  border-left: 4px solid #ffb300;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin: 16px 0 24px;
-  color: #6d4c00;
-}
+.body :deep(strong) { font-weight: 700; color: #222; }
 .section-h2 { font-size: 1.25rem; font-weight: 700; margin: 8px 0 16px; color: #333; }
-.section-h3 { font-size: 1.1rem; font-weight: 700; margin: 24px 0 12px; color: #333; }
+.section-h3 { font-size: 1.1rem; font-weight: 700; margin: 24px 0 16px; color: #333; }
+
+.scenario-divider {
+  border: 0;
+  border-top: 1px solid #e0e0e0;
+  margin: 24px 0 8px;
+}
+
 .scenario {
-  list-style: none;
-  padding-left: 0;
-  counter-reset: step;
-}
-.scenario li {
-  position: relative;
-  padding: 12px 16px 12px 48px;
-  margin: 0 0 12px;
-  background: #f7f8ff;
-  border-radius: 8px;
-  line-height: 1.7;
-}
-.scenario li::before {
-  counter-increment: step;
-  content: counter(step);
-  position: absolute;
-  left: 14px;
-  top: 12px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #6c63ff;
-  color: #fff;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 700;
+  margin: 0;
+  padding: 0;
+}
+.scenario-step {
+  max-width: 620px;
+  margin: 0;
+  padding: 8px 16px;
+  text-align: center;
+  line-height: 1.75;
+  color: #444;
+}
+.scenario-arrow {
+  margin: 12px 0;
+  color: #888;
+  font-size: 1.25rem;
+  line-height: 1;
 }
 </style>
