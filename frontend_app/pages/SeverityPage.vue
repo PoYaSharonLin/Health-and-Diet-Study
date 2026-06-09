@@ -166,9 +166,6 @@ export default {
 }
 .efficacy-block {
   margin-bottom: 28px;
-  padding: 20px 24px;
-  background: #f7f8ff;
-  border-radius: 12px;
 }
 .efficacy-h3 {
   font-size: 1.15rem;

@@ -7,12 +7,37 @@
       data-track="consult-image"
     />
 
-    <p class="body" data-track="consult-intro">{{ introText }}</p>
-    <p class="body" data-track="consult-explain">{{ explainText }}</p>
+    <i18n-t
+      keypath="consultationReminder.intro"
+      tag="p"
+      class="body"
+      scope="global"
+      data-track="consult-intro"
+    >
+      <template #disease>{{ diseaseName }}</template>
+      <template #strong><strong>{{ $t('consultationReminder.introStrong') }}</strong></template>
+    </i18n-t>
+    <i18n-t
+      keypath="consultationReminder.explain"
+      tag="p"
+      class="body"
+      scope="global"
+      data-track="consult-explain"
+    >
+      <template #disease>{{ diseaseName }}</template>
+      <template #strong><strong class="hl-red">{{ $t('consultationReminder.explainStrong') }}</strong></template>
+    </i18n-t>
 
-    <h3 class="section-h3">{{ $t('consultationReminder.sliderHeading') }}</h3>
+    <p class="body" data-track="consult-slider-lead">{{ $t('consultationReminder.sliderLead') }}</p>
     <ol class="slider-rules" data-track="consult-rules">
-      <li v-for="(s, i) in sliderInstructions" :key="i">{{ s }}</li>
+      <li>{{ $t('consultationReminder.sliderInstructions.0') }}</li>
+      <i18n-t
+        keypath="consultationReminder.sliderInstructions.1"
+        tag="li"
+        scope="global"
+      >
+        <template #strong><strong>{{ $t('consultationReminder.sliderInstructionStrong') }}</strong></template>
+      </i18n-t>
     </ol>
   </ContentLayout>
 </template>
@@ -29,15 +54,6 @@ export default {
     diseaseName() {
       const key = session.getDisease();
       return key ? this.$t(`diseases.${key}`) : '';
-    },
-    introText() {
-      return this.$t('consultationReminder.intro').replace(/\{disease\}/g, this.diseaseName);
-    },
-    explainText() {
-      return this.$t('consultationReminder.explain').replace(/\{disease\}/g, this.diseaseName);
-    },
-    sliderInstructions() {
-      return this.$tm('consultationReminder.sliderInstructions').map(s => this.$rt(s));
     },
     image() {
       const cond = session.getCondition();
@@ -65,12 +81,7 @@ export default {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 .body { margin: 0 0 18px; line-height: 1.75; color: #333; }
-.section-h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 20px 0 12px;
-  color: #333;
-}
+.hl-red { color: #e53935; font-weight: 700; }
 .slider-rules {
   padding-left: 22px;
   margin: 0;

@@ -9,11 +9,30 @@
       data-track="docrec-image"
     />
 
-    <p class="note" data-track="docrec-note">{{ $t('doctorRecommendation.note') }}</p>
+    <i18n-t
+      keypath="doctorRecommendation.note"
+      tag="p"
+      class="note"
+      scope="global"
+      data-track="docrec-note"
+    >
+      <template #b1><strong>{{ $t('doctorRecommendation.noteStrong.b1') }}</strong></template>
+      <template #b2><strong>{{ $t('doctorRecommendation.noteStrong.b2') }}</strong></template>
+      <template #b3><strong>{{ $t('doctorRecommendation.noteStrong.b3') }}</strong></template>
+      <template #b4><strong>{{ $t('doctorRecommendation.noteStrong.b4') }}</strong></template>
+    </i18n-t>
 
     <h3 class="section-h3">{{ $t('doctorRecommendation.reminderHeading') }}</h3>
     <ol class="reminders" data-track="docrec-reminders">
-      <li v-for="(r, i) in reminders" :key="i">{{ r }}</li>
+      <i18n-t
+        v-for="(s, i) in reminderStrongs"
+        :key="i"
+        :keypath="`doctorRecommendation.reminders.${i}`"
+        tag="li"
+        scope="global"
+      >
+        <template #strong><strong>{{ s }}</strong></template>
+      </i18n-t>
     </ol>
   </ContentLayout>
 </template>
@@ -34,8 +53,8 @@ export default {
     bodyText() {
       return this.$t('doctorRecommendation.body').replace(/\{disease\}/g, this.diseaseName);
     },
-    reminders() {
-      return this.$tm('doctorRecommendation.reminders').map(r => this.$rt(r));
+    reminderStrongs() {
+      return this.$tm('doctorRecommendation.reminderStrong').map(s => this.$rt(s));
     },
     image() {
       const cond = session.getCondition();
@@ -64,13 +83,9 @@ export default {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 .note {
-  background: #fff8e1;
-  border-left: 4px solid #ffb300;
-  padding: 14px 18px;
-  border-radius: 8px;
   margin: 0 0 28px;
-  color: #6d4c00;
-  line-height: 1.7;
+  color: #333;
+  line-height: 1.75;
 }
 .section-h3 {
   font-size: 1.1rem;

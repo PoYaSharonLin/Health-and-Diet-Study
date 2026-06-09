@@ -164,25 +164,37 @@
   "doctorRecommendation": {
     "title": "Based on your preferences, we recommend Dr. Zhang for your treatment",
     "body":  "During Dr. Zhang's leisured consultation, she will provide medication for treating {disease}, guidance on preventive measures in daily life, and information about causes of the condition.",
-    "note":  "Please note: Dr. Zhang emphasizes a fundamental treatment approach, and she may have strict expectations regarding your lifestyle habits. It is preferred that you have already made some improvements in your diet and lifestyle habits before seeking treatment, to avoid unnecessary utilization of healthcare resources.",
+    "note":  "{b1}: Dr. Zhang emphasizes a {b2} approach, and she may have {b3} regarding your lifestyle habits. It is preferred that you have already made some improvements in your diet and lifestyle habits before seeking treatment, to avoid {b4}.",
+    "noteStrong": {
+      "b1": "Please note",
+      "b2": "fundamental treatment",
+      "b3": "strict expectations",
+      "b4": "unnecessary utilization of healthcare resources"
+    },
     "reminderHeading": "Reminder",
     "reminders": [
-      "Dr. Zhang will ask you to report your lifestyle and dietary behaviors during the consultation to facilitate assessment.",
-      "Adhere to Dr. Zhang's recommendations during your next visit. If non-compliant, you will be asked to make improvements before rescheduling the appointment."
+      "Dr. Zhang will ask you to {strong} during the consultation to facilitate assessment.",
+      "Adhere to Dr. Zhang's recommendations during your next visit. If {strong}, you will be asked to make improvements before rescheduling the appointment."
+    ],
+    "reminderStrong": [
+      "report your lifestyle and dietary behaviors",
+      "non-compliant"
     ],
     "imageAlt": "Female doctor in blue scrubs"
   },
 
   "consultationReminder": {
     "title": "Initial Consultation Reminder: Report your dietary behaviors over the past week.",
-    "intro": "On the next page, please provide your dietary behaviors in the past week to facilitate Dr. Zhang's assessment of your {disease} issue.",
-    "explain": "Afterward, Dr. Zhang will evaluate whether your dietary behaviors can improve or worsen your {disease} based on your answers.",
-    "sliderHeading": "How to use the slider",
+    "intro": "On the next page, please provide your {strong} to facilitate Dr. Zhang's assessment of your {disease} issue.",
+    "introStrong": "dietary behaviors in the past week",
+    "explain": "Afterward, Dr. Zhang will evaluate whether your dietary behaviors can {strong} your {disease} based on your answers.",
+    "explainStrong": "improve or worsen",
+    "sliderLead": "On the next page, please adjust the slider according to your level of agreement with the statements.",
     "sliderInstructions": [
-      "On the next page, please adjust the slider according to your level of agreement with the statements.",
       "You must use the slider to answer the questions.",
-      "If your answer matches the slider's initial position, please tap on that position so the system can recognize that you have responded."
+      "If your answer matches the slider's initial position, {strong}."
     ],
+    "sliderInstructionStrong": "please tap on that position so the system can recognize that you have responded",
     "imageAlt": "Doctor with stethoscope holding a tablet across from a patient"
   },
 
