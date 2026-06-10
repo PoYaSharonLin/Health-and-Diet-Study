@@ -13,7 +13,7 @@
       class="question-block"
       :data-track="'docpref-q' + (qi + 1)"
     >
-      <h3 class="q-title">{{ qi + 1 }}. {{ interpolate(q.text) }}</h3>
+      <h3 class="q-title">{{ qi + 1 }}. {{ q.text }}</h3>
       <div class="options">
         <label
           v-for="opt in q.options"
