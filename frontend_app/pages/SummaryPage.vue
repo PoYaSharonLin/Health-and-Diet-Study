@@ -319,7 +319,7 @@ export default {
 
         this.submitted = true;
 
-        const postSurveyUrl = new URL('https://www.surveycake.com/s/yXQ6M');
+        const postSurveyUrl = new URL('https://zh.research.net/r/N5L8Z9Q');
         postSurveyUrl.searchParams.set('uid', this.userId);
         const condition = session.getCondition();
         if (condition) postSurveyUrl.searchParams.set('condition', condition);

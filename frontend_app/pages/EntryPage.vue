@@ -9,7 +9,7 @@
 import axios from 'axios';
 import { isMobileOrTablet } from '@/lib/device';
 
-const PRE_SURVEY_URL = 'https://www.surveycake.com/s/mYWoK';
+const PRE_SURVEY_URL = 'https://zh.research.net/r/FQ78XTL';
 const USER_ID_KEY = 'survey_user_id';
 const CONDITION_KEY = 'survey_condition';
 
