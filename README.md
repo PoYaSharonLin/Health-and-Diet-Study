@@ -31,8 +31,8 @@ The backend follows a **Domain-Driven Design (DDD)** architecture, mirroring the
    RACK_ENV=test bundle exec rake db:setup   # Test database
    ```
 
-4. Configure `frontend_app/.env.local` (optional):
-   - `VUE_APP_BASE_URL`: Override the base URL used in generated `share_url` values (default: `http://localhost:8080`)
+4. Configure backend environment variables (optional):
+   - `APP_BASE_URL`: Base URL the backend uses to build `share_url` values, e.g. `https://health-and-diet-study.onrender.com` (default: `http://localhost:8080`). Set this on your deploy host (e.g. Render) so generated links point at the live site.
 
 > **Note:** If you encounter `SQLite3::CantOpenException`, run:
 > ```shell

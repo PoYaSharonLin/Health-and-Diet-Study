@@ -280,8 +280,8 @@
       { "text": "你剛才在回答這份問卷時多有可能謊報？",     "minLabel": "非常可能謊報", "maxLabel": "非常不可能謊報" }
     ],
     "validationHint": "請確認所有題目後再提交（已確認 {done}/{total} 題）",
-    "submitBtn": "前往最後一份問卷",
-    "errorMsg": "上傳失敗，請點擊「前往最後一份問卷」重試。",
+    "submitBtn": "下一頁",
+    "errorMsg": "上傳失敗，請點擊「下一頁」重試。",
     "spinnerText": "資料上傳中，請稍候…"
   }
 }

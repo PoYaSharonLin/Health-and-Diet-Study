@@ -280,8 +280,8 @@
       { "text": "How likely is it that you lied when answering this survey just now?",            "minLabel": "Very likely to lie", "maxLabel": "Very unlikely to lie" }
     ],
     "validationHint": "Please confirm all items before submitting ({done}/{total} confirmed)",
-    "submitBtn": "Go to the final survey",
-    "errorMsg": "Upload failed. Please click \"Go to the final survey\" to retry.",
+    "submitBtn": "Next page",
+    "errorMsg": "Upload failed. Please click \"Next page\" to retry.",
     "spinnerText": "Uploading data, please wait…"
   }
 }
