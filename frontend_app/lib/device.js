@@ -1,30 +1,33 @@
 /**
  * device.js
  *
- * Screen-based device classifier. Used to keep mobile/tablet
+ * Input-capability device classifier. Used to keep mobile/tablet
  * respondents out of the survey flow before they are assigned a uid.
  *
- * Rule: a device is treated as desktop only when the screen's short
- * side is at least 600 px and the long side is at least 1000 px.
- * Uses screen.* (physical monitor) instead of innerWidth/Height so
- * split-window users on real desktops aren't falsely blocked.
+ * Screen size alone can't tell a large tablet (iPad Pro, Samsung Tab)
+ * apart from a laptop, and modern iPadOS Safari spoofs a "Macintosh"
+ * user agent, so UA sniffing fails too. Instead we classify by pointer
+ * capability: a desktop/laptop exposes at least one *fine* pointer
+ * (mouse/trackpad), while a tablet/phone is touch-only.
+ *
+ * - A device with no fine pointer at all is treated as mobile/tablet.
+ * - An iPad masquerading as macOS is caught via maxTouchPoints: real
+ *   Macs report 0, iPads report > 1.
+ * Touchscreen laptops keep a fine pointer, so they are still allowed.
  */
 
-const MIN_SHORT_SIDE = 600;
-const MIN_LONG_SIDE  = 1000;
-
 export function isMobileOrTablet() {
-  const w = window.screen.width;
-  const h = window.screen.height;
-  const short = Math.min(w, h);
-  const long  = Math.max(w, h);
-  if (short < MIN_SHORT_SIDE || long < MIN_LONG_SIDE) return true;
+  const hasFinePointer = window.matchMedia('(any-pointer: fine)').matches;
+  if (!hasFinePointer) return true;
 
+  // iPadOS Safari spoofs a macOS UA but still reports touch points.
   const ua = navigator.userAgent;
+  const isSpoofedIPad = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+  if (isSpoofedIPad) return true;
+
   const uaSaysMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(ua)
                     || navigator.userAgentData?.mobile === true;
-  const noFinePointer = !window.matchMedia('(pointer: fine)').matches;
-  if (uaSaysMobile && noFinePointer) return true;
+  if (uaSaysMobile) return true;
 
   return false;
 }
