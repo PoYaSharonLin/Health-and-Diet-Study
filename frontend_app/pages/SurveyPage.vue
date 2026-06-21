@@ -54,7 +54,7 @@
                 class="confirm-btn"
                 :class="{ confirmed: confirmedQuestions[index], disabled: !canConfirm(index) }"
                 :disabled="!canConfirm(index)"
-                @click="toggleConfirm(index)"
+                @click="confirmAnswer(index)"
                 :data-track="'q' + (index + 1) + '-confirm'"
                 :title="confirmButtonTitle(index)"
               >
@@ -191,9 +191,11 @@ export default {
       if (!this.sliderTouched[index]) return this.$t('common.confirmTitle.notTouchedClick');
       return this.$t('common.confirmTitle.ready');
     },
-    toggleConfirm(index) {
+    confirmAnswer(index) {
+      // One-way lock: once confirmed, the answer can no longer be changed.
+      if (this.confirmedQuestions[index]) return;
       if (!this.canConfirm(index)) return;
-      this.confirmedQuestions[index] = !this.confirmedQuestions[index];
+      this.confirmedQuestions[index] = true;
     },
   },
 };

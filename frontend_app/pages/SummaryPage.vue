@@ -103,7 +103,7 @@
                 class="confirm-btn"
                 :class="{ confirmed: postConfirmed[index], disabled: !canConfirmPost(index) }"
                 :disabled="!canConfirmPost(index)"
-                @click="toggleConfirm(index)"
+                @click="confirmAnswer(index)"
                 :data-track="'pq' + (index + 1) + '-confirm'"
                 :title="postConfirmTitle(index)"
               >
@@ -237,9 +237,11 @@ export default {
       if (!this.postSliderTouched[index]) return this.$t('common.confirmTitle.notTouchedClick');
       return this.$t('common.confirmTitle.ready');
     },
-    toggleConfirm(index) {
+    confirmAnswer(index) {
+      // One-way lock: once confirmed, the answer can no longer be changed.
+      if (this.postConfirmed[index]) return;
       if (!this.canConfirmPost(index)) return;
-      this.postConfirmed[index] = !this.postConfirmed[index];
+      this.postConfirmed[index] = true;
     },
 
     async submit() {
