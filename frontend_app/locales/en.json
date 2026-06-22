@@ -231,18 +231,18 @@
     },
     "validationHint": "Please confirm all items before continuing ({done}/{total} confirmed)",
     "questions": [
-      { "text": "Did you eat three meals regularly in the last week?", "minLabel": "I never ate three meals regularly in the past seven days", "maxLabel": "I ate three meals regularly every day in the past seven days" },
-      { "text": "Did you eat sweets or snacks last week?", "minLabel": "I ate candy or snacks every day in the past seven days", "maxLabel": "I never ate candy or snacks in the past seven days" },
-      { "text": "Did you chew your food at least twenty times before swallowing each bite in the last week?", "minLabel": "I never chewed my food thoroughly before swallowing in the past seven days", "maxLabel": "I chewed at least 20 times per bite in the past seven days" },
-      { "text": "When thirsty or hot, did you only drink plain water, or drink unhealthy beverages (containing sugar or alcohol)?", "minLabel": "I drank unhealthy beverages every day in the past seven days", "maxLabel": "I drank only plain water in the past seven days" },
-      { "text": "Did you eat fried or oily foods (such as peanuts, potato chips, fried chicken, etc.) in the last week?", "minLabel": "I ate fried foods every day in the past seven days", "maxLabel": "I never ate fried foods in the past seven days" },
-      { "text": "Did you eat fruit every day in the last week?", "minLabel": "I never ate fruit in the past seven days", "maxLabel": "I ate fruit every day in the past seven days" },
-      { "text": "Did you eat green vegetables every day in the last week?", "minLabel": "I never ate green vegetables in the past seven days", "maxLabel": "I ate green vegetables every day in the past seven days" },
-      { "text": "Did you eat late-night snacks in the last week?", "minLabel": "I ate late-night snacks every day in the past seven days", "maxLabel": "I never ate late-night snacks in the past seven days" },
-      { "text": "While eating, did you distract yourself watching TV or using your phone/iPad in the last week?", "minLabel": "I was distracted while eating in the past seven days", "maxLabel": "I focused on eating in the past seven days" },
-      { "text": "Did you use food to improve your mood when you were feeling down in the past week?", "minLabel": "I ate to improve my mood every time in the past seven days", "maxLabel": "I never ate to improve my mood in the past seven days" },
-      { "text": "Did you use food as a way to reward yourself or celebrate in the last week?", "minLabel": "I used food as a reward every time in the past seven days", "maxLabel": "I never used food as a reward in the past seven days" },
-      { "text": "Did you wait until you were very hungry before going to the store to buy food last week?", "minLabel": "I always waited until I was very hungry to shop in the past seven days", "maxLabel": "I never waited until I was very hungry to shop in the past seven days" }
+      { "text": "Did you eat three meals regularly in the last week?", "minLabel": "I never ate three meals regularly", "maxLabel": "I ate three meals regularly every single day" },
+      { "text": "Did you eat sweets or snacks last week?", "minLabel": "I ate sweets/snacks every single day", "maxLabel": "I never ate sweets or snacks in the past week" },
+      { "text": "Did you chew your food at least twenty times before swallowing each bite last week?", "minLabel": "I never chewed my food at least 20 times", "maxLabel": "I always chewed at least 20 times" },
+      { "text": "When thirsty or hot, did you only drink plain water, or drink unhealthy beverages (containing sugar or alcohol)?", "minLabel": "I drank unhealthy beverages every day", "maxLabel": "I only drank plain water every day" },
+      { "text": "Did you eat fried or oily foods (such as peanuts, potato chips, fried chicken, etc.) in the last week?", "minLabel": "I ate fried/oily foods every day", "maxLabel": "I never ate fried/oily foods in the past week" },
+      { "text": "Did you eat fruit every day in the last week?", "minLabel": "I never ate fruit in the past week", "maxLabel": "I ate fruit every single day" },
+      { "text": "Did you eat green vegetables every day in the last week?", "minLabel": "I never ate vegetables in the past week", "maxLabel": "I ate vegetables every single day" },
+      { "text": "Did you eat late-night snacks in the last week?", "minLabel": "I ate late-night snacks every day", "maxLabel": "I never ate late-night snacks in the past week" },
+      { "text": "While eating, did you distract yourself watching TV or using your phone/iPad in the last week?", "minLabel": "I was always distracted while eating in the past week", "maxLabel": "I was always focused on eating" },
+      { "text": "Did you use food to improve your mood when you were feeling down in the past week?", "minLabel": "I used food to improve my mood every day", "maxLabel": "I never used food to improve my mood in the past week" },
+      { "text": "Did you use food as a way to reward yourself or celebrate in the last week?", "minLabel": "I used food as a reward every day", "maxLabel": "I never used food as a reward in the past week" },
+      { "text": "Did you wait until you were very hungry before going to the store to buy food last week?", "minLabel": "I waited until I was very hungry before purchasing food in the past week", "maxLabel": "I never waited until I was very hungry before purchasing food in the past week" }
     ]
   },
 
