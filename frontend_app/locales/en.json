@@ -162,7 +162,12 @@
 
   "doctorRecommendation": {
     "title": "Based on your preferences, we recommend Dr. Zhang for your treatment",
-    "body":  "During Dr. Zhang's leisured consultation, she will provide medication for treating your condition, guidance on preventive measures in daily life, and information about causes of the condition.",
+    "body":  "During Dr. Zhang's {style} & {pace} consultation, she will provide medication for treating your condition, and information about {info}.",
+    "bodyFragments": {
+      "style": { "direct": "direct", "tactful": "tactful" },
+      "pace":  { "efficient": "efficient", "leisured": "leisured" },
+      "info":  { "causes": "causes of the condition", "preventive": "subsequent preventive advice" }
+    },
     "note":  "{b1}: Dr. Zhang emphasizes a {b2} approach, and she may have {b3} regarding your lifestyle habits. It is preferred that you have already made some improvements in your diet and lifestyle habits before seeking treatment, to avoid {b4}.",
     "noteStrong": {
       "b1": "Please note",

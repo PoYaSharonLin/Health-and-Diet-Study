@@ -96,8 +96,23 @@ export default {
       });
     },
 
+    isOnThumb(e) {
+      const r = e.currentTarget.getBoundingClientRect();
+      const range = this.max - this.min;
+      const frac = range > 0 ? (this.internalValue - this.min) / range : 0;
+      // thumb 在「軌道寬 - thumb 寬」範圍內移動
+      const thumbCenter = r.left + THUMB_PX / 2 + frac * (r.width - THUMB_PX);
+      const tolerance = THUMB_PX / 2 + 4; // 給一點抓取容差
+      return Math.abs(e.clientX - thumbCenter) <= tolerance;
+    },
+
     onPointerDown(e) {
       if (this.finished) return;
+      // 只有真的抓在 thumb 上才允許互動，點軌道一律擋掉、不跳轉
+      if (!this.isOnThumb(e)) {
+        e.preventDefault();
+        return;
+      }
       this.pointerX = Math.round(e.pageX);
       this.pointerY = Math.round(e.pageY);
       tracker.recordSlider(

@@ -162,7 +162,12 @@
 
   "doctorRecommendation": {
     "title": "依您的偏好，我們為您推薦張醫師",
-    "body":  "張醫師會以從容的步調為你看診，提供治療藥物、日常生活預防建議，以及疾病成因的相關資訊。",
+    "body":  "張醫師會以{style}且{pace}的方式為你看診，提供治療藥物，以及{info}的相關資訊。",
+    "bodyFragments": {
+      "style": { "direct": "直接", "tactful": "委婉" },
+      "pace":  { "efficient": "高效率", "leisured": "從容" },
+      "info":  { "causes": "疾病成因", "preventive": "後續預防建議" }
+    },
     "note":  "{b1}：張醫師強調{b2}，並對你的生活習慣有較{b3}。建議你在就診前已先在飲食與生活習慣上做出部分改善，以避免{b4}。",
     "noteStrong": {
       "b1": "請注意",

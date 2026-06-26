@@ -47,7 +47,16 @@ export default {
   components: { ContentLayout },
   computed: {
     bodyText() {
-      return this.$t('doctorRecommendation.body');
+      let a = {};
+      try { a = JSON.parse(sessionStorage.getItem('doctor_preference_answers')) || {}; }
+      catch (_) { /* ignore malformed draft */ }
+      const frag = (group, val) =>
+        val ? this.$t(`doctorRecommendation.bodyFragments.${group}.${val}`) : '';
+      return this.$t('doctorRecommendation.body', {
+        style: frag('style', a.style),
+        pace:  frag('pace',  a.pace),
+        info:  frag('info',  a.info),
+      });
     },
     reminderStrongs() {
       return this.$tm('doctorRecommendation.reminderStrong').map(s => this.$rt(s));
