@@ -39,5 +39,23 @@ describe 'Behavior Routes' do
 
       _(last_response.status).must_equal 404
     end
+
+    it 'rejects a respondent_id with disallowed characters (400) before any work' do
+      header 'CONTENT_TYPE', 'application/json'
+      post '/api/behavior/bad.id/confirm-upload',
+           { key: 'behavior_data/whatever.bin' }.to_json
+
+      _(last_response.status).must_equal 400
+    end
+  end
+
+  describe 'GET /api/behavior/:respondent_id/presigned-url' do
+    it 'rejects a bad respondent_id (400) without building an S3 key' do
+      # A valid id here would attempt a live S3 presign; the guard must reject
+      # this id first, so the test needs no S3 stub.
+      get '/api/behavior/bad.id/presigned-url'
+
+      _(last_response.status).must_equal 400
+    end
   end
 end

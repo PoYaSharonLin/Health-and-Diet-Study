@@ -37,4 +37,11 @@ describe 'Survey Routes' do
     get '/api/survey/session/non_existent'
     _(last_response.status).must_equal 404
   end
+
+  it 'should reject a create with a malformed respondent_id' do
+    header 'CONTENT_TYPE', 'application/json'
+    post '/api/survey/session', { respondent_id: 'a/../b' }.to_json
+
+    _(last_response.status).must_equal 400
+  end
 end

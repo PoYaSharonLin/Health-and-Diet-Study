@@ -19,6 +19,7 @@ module SurveyTracker
 
         def call(respondent_id:)
           return Failure(bad_request('respondent_id is required')) if respondent_id.nil? || respondent_id.strip.empty?
+          return Failure(bad_request('respondent_id has an invalid format')) unless Domain::Shared::RespondentId.valid?(respondent_id)
 
           repository = Database::Repository::SurveySessions.new
           condition = repository.find_by_respondent_id(respondent_id)&.condition

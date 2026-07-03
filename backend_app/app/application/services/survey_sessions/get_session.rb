@@ -7,6 +7,8 @@ module SurveyTracker
       class GetSession < ApplicationOperation
 
         def call(respondent_id:)
+          return Failure(bad_request('respondent_id has an invalid format')) unless Domain::Shared::RespondentId.valid?(respondent_id)
+
           record = Database::Repository::SurveySessions.new.find_by_respondent_id(respondent_id)
           return Failure(not_found("No session found for respondent_id: #{respondent_id}")) unless record
 

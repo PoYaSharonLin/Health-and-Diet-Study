@@ -19,6 +19,11 @@ module SurveyTracker
         response['Content-Type'] = 'application/json'
 
         r.on String do |respondent_id|
+          # Reject untrusted ids before they reach an S3 key or the queue.
+          unless Domain::Shared::RespondentId.valid?(respondent_id)
+            response.status = 400
+            next({ error: 'invalid respondent_id' }.to_json)
+          end
 
           # GET /api/behavior/:respondent_id/presigned-url
           # Returns a short-lived (10 min) presigned PUT URL for the frontend to upload

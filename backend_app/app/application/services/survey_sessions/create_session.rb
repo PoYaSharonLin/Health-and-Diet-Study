@@ -9,6 +9,7 @@ module SurveyTracker
 
         def call(respondent_id:, original_url: nil, metadata: nil)
           return Failure(bad_request('respondent_id is required')) if respondent_id.nil? || respondent_id.strip.empty?
+          return Failure(bad_request('respondent_id has an invalid format')) unless Domain::Shared::RespondentId.valid?(respondent_id)
 
           session_record = Database::Repository::SurveySessions.new.find_or_create(
             respondent_id:,
