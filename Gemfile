@@ -38,6 +38,9 @@ gem 'rexml'          # XML parser required by aws-sdk-s3 for CORS / ACL operatio
 # DATABASE
 gem 'sequel', '~>5.0'
 
+# QUEUE (condition assignment tickets)
+gem 'redis', '~>5.0'
+
 group :production do
   gem 'pg', '~>1.0'
 end
@@ -49,6 +52,7 @@ end
 # TESTING
 group :development, :test do
   gem 'minitest', '~>6.0'
+  gem 'mock_redis'
   gem 'rack-test'
   gem 'simplecov', require: false
 end
