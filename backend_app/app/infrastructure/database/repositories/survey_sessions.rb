@@ -63,6 +63,29 @@ module SurveyTracker
           end
         end
 
+        # Persists a queue-drawn condition on the respondent's session unless
+        # one is already set (concurrent-assignment race). Returns the
+        # condition actually stored, which the caller compares against its
+        # ticket to decide whether to release it.
+        def persist_condition(respondent_id:, condition:)
+          Orm::SurveySession.db.transaction do
+            existing = find_by_respondent_id(respondent_id)
+            return existing.condition if existing&.condition
+
+            if existing
+              existing.update(condition:)
+            else
+              Orm::SurveySession.create(
+                respondent_id:,
+                condition:,
+                started_at: Time.now.utc
+              )
+            end
+
+            condition
+          end
+        end
+
         def update_ended_at(respondent_id:)
           session = find_by_respondent_id(respondent_id)
           return nil unless session
