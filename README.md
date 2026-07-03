@@ -99,6 +99,26 @@ bundle exec rake db:reset       # Drop + migrate (destructive)
 bundle exec rake db:drop        # Delete database (destructive)
 ```
 
+### Inspecting the database with psql
+
+To query the production database directly (e.g. to check how many respondents
+were assigned to each condition):
+
+1. **Install `psql`** — the PostgreSQL command-line client (e.g. `brew install
+   libpq` on macOS, or `apt-get install postgresql-client` on Linux).
+2. **Get the connection command** — in the Render dashboard, open your database
+   and copy the **PSQL Command** (the `psql postgresql://...` string), then run
+   it in your terminal to connect.
+3. **Run the query** — for example, to see how many sessions fall into each
+   condition:
+
+   ```sql
+   SELECT condition, COUNT(*) AS n
+   FROM survey_sessions
+   GROUP BY condition
+   ORDER BY n DESC;
+   ```
+
 ## Inspecting uploaded S3 data
 
 Session event blobs are uploaded to S3 under `behavior_data/`. The bucket name
@@ -113,7 +133,7 @@ bundle exec rake s3:list
 bundle exec rake s3:sync
 
 # Sync to a custom destination
-bundle exec rake "s3:sync[./mydata/]"
+bundle exec rake "s3:sync[./mouse_movement_data/]"
 ```
 
 ## Production
