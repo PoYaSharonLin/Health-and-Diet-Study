@@ -47,6 +47,22 @@ describe 'AssignmentQueue' do
     end
   end
 
+  describe 'member parsing (defense in depth)' do
+    # Boundary validation should keep '|' out of respondent_id, but the queue
+    # must still recover the condition correctly if a delimiter ever slips in.
+    it 'recovers the condition when respondent_id contains the delimiter' do
+      @queue.push_available(CONDITIONS.first)
+      drawn = @queue.draw('a|b|c', now: T0)
+
+      _(drawn).must_equal CONDITIONS.first
+      _(@queue.counts[:inflight]).must_equal(CONDITIONS.first => 1)
+
+      recycled = @queue.sweep_expired!(now: T0 + @queue.deadline_seconds + 1)
+      _(recycled).must_equal 1
+      _(@queue.counts[:available][CONDITIONS.first]).must_equal 1
+    end
+  end
+
   describe 'sweep_expired!' do
     it 'recycles only tickets past their deadline' do
       @queue.seed(CONDITIONS, 1)

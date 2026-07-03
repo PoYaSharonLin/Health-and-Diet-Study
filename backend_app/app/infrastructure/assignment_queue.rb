@@ -53,7 +53,7 @@ module SurveyTracker
 
         expired = @redis.zrangebyscore(INFLIGHT_KEY, 0, now.to_i)
         expired.count do |entry|
-          condition = entry.split('|', 2).last
+          condition = entry.rpartition('|').last
           # ZREM guards the RPUSH so two concurrent sweeps can't recycle one ticket twice
           @redis.zrem(INFLIGHT_KEY, entry) && @redis.rpush(AVAILABLE_KEY, condition)
         end
@@ -101,7 +101,7 @@ module SurveyTracker
       def counts
         {
           available: @redis.lrange(AVAILABLE_KEY, 0, -1).tally,
-          inflight:  @redis.zrange(INFLIGHT_KEY, 0, -1).map { |m| m.split('|', 2).last }.tally
+          inflight:  @redis.zrange(INFLIGHT_KEY, 0, -1).map { |m| m.rpartition('|').last }.tally
         }
       end
 
