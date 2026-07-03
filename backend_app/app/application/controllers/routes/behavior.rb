@@ -57,6 +57,7 @@ module SurveyTracker
               )
 
               if session
+                burn_assignment_ticket(respondent_id, session.condition)
                 response.status = 200
                 { success: true }.to_json
               else
@@ -99,6 +100,20 @@ module SurveyTracker
           end
 
         end
+      end
+
+      private
+
+      # Burn the respondent's assignment ticket once their upload is confirmed,
+      # so the queue balances on completions rather than starts. No-op when the
+      # queue is unconfigured or the condition came from the DB fallback; a Redis
+      # outage must never fail an otherwise-successful completion.
+      def burn_assignment_ticket(respondent_id, condition)
+        return if condition.nil? || condition.to_s.strip.empty?
+
+        Infrastructure::AssignmentQueue.new.burn(respondent_id, condition)
+      rescue Redis::BaseError
+        nil
       end
     end
   end
