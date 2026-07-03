@@ -113,6 +113,94 @@ namespace :s3 do
   end
 end
 
+# Print available / inflight ticket counts per condition. Shared by the
+# assignment tasks below.
+def print_assignment_status(queue, conditions)
+  counts = queue.counts
+  puts '==> Tickets per condition (available / inflight):'
+  conditions.each do |c|
+    puts "    #{c.ljust(12)} available=#{counts[:available][c] || 0}  inflight=#{counts[:inflight][c] || 0}"
+  end
+end
+
+namespace :assignment do
+  # Load infrastructure (queue, ORM) and application (the canonical condition
+  # list) so every task shares one source of truth for the conditions.
+  task :config do
+    require_app(%w[infrastructure application])
+    @queue      = SurveyTracker::Infrastructure::AssignmentQueue.new
+    @conditions = SurveyTracker::Service::Assignments::AssignCondition::VALID_CONDITIONS
+    unless @queue.configured?
+      abort 'REDIS_URL is not set — the assignment queue is disabled. ' \
+            'Set it in backend_app/config/secrets.yml before running assignment tasks.'
+    end
+  end
+
+  desc 'Seed the queue with N balanced blocks (each block = every condition once; default 25)'
+  task :seed, [:n_blocks] => [:config] do |_t, args|
+    n_blocks = Integer(args[:n_blocks] || 25)
+
+    existing = @queue.counts[:available].values.sum
+    if existing.positive?
+      warn "Pool already holds #{existing} available tickets. " \
+           'Run `rake assignment:reset[N]` to wipe and reseed.'
+      next
+    end
+
+    @queue.seed(@conditions, n_blocks)
+    puts "==> Seeded #{n_blocks} blocks (#{n_blocks * @conditions.size} tickets)."
+    print_assignment_status(@queue, @conditions)
+  end
+
+  desc 'Show available / inflight ticket counts per condition'
+  task status: [:config] do
+    print_assignment_status(@queue, @conditions)
+  end
+
+  desc 'Wipe and reseed the queue with N balanced blocks (default 25)'
+  task :reset, [:n_blocks] => [:config] do |_t, args|
+    @queue.clear!
+    @queue.seed(@conditions, Integer(args[:n_blocks] || 25))
+    puts '==> Queue wiped and reseeded.'
+    print_assignment_status(@queue, @conditions)
+  end
+
+  desc 'Rebuild queue state from the database after a Redis flush (target N blocks; default 25)'
+  task :reconcile, [:n_blocks] => [:config] do |_t, args|
+    n_blocks = Integer(args[:n_blocks] || 25)
+
+    rows = SurveyTracker::Database::Orm::SurveySession.where(condition: @conditions).all
+    @queue.clear!
+
+    completed = Hash.new(0)
+    inflight  = Hash.new(0)
+    rows.each do |s|
+      if s.status == 'completed'
+        # Completed surveys already burned their ticket — leave them off the queue.
+        completed[s.condition] += 1
+      else
+        # In-progress assignment: restore it inflight. If its deadline has already
+        # passed, the next draw's sweep recycles it back to the pool automatically.
+        inflight[s.condition] += 1
+        deadline = (s.started_at || Time.now).to_i + @queue.deadline_seconds
+        @queue.restore_inflight(s.respondent_id, s.condition, deadline: deadline)
+      end
+    end
+
+    # Refill available with each condition's remaining capacity, interleaved so
+    # any prefix of the pool stays near-balanced.
+    pool = @conditions.flat_map do |c|
+      remaining = n_blocks - completed[c] - inflight[c]
+      Array.new([remaining, 0].max, c)
+    end
+    pool.shuffle.each { |c| @queue.push_available(c) }
+
+    puts "==> Reconciled from #{rows.size} assigned sessions " \
+         "(#{completed.values.sum} completed, #{inflight.values.sum} inflight)."
+    print_assignment_status(@queue, @conditions)
+  end
+end
+
 namespace :run do
   desc 'Run backend API server for development'
   task :api do

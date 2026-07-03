@@ -36,7 +36,14 @@ module SurveyTracker
       # Refill the pool with n_blocks shuffled blocks (each block = every
       # condition once), so any prefix of the pool is near-balanced.
       def seed(conditions, n_blocks)
-        n_blocks.times { conditions.shuffle.each { |c| @redis.rpush(AVAILABLE_KEY, c) } }
+        n_blocks.times { conditions.shuffle.each { |c| push_available(c) } }
+      end
+
+      # Append a single available ticket. Primitive shared by seed and the
+      # reconcile rake task, which needs to add uneven per-condition counts.
+      def push_available(condition)
+        @redis.rpush(AVAILABLE_KEY, condition)
+        condition
       end
 
       # Recycle inflight tickets whose completion deadline has passed.

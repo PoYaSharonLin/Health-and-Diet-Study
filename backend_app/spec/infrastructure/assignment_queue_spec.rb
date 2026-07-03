@@ -21,6 +21,16 @@ describe 'AssignmentQueue' do
     end
   end
 
+  describe 'push_available' do
+    it 'appends a single drawable ticket to the pool' do
+      @queue.push_available(CONDITIONS.first)
+      @queue.push_available(CONDITIONS.first)
+
+      _(@queue.counts[:available]).must_equal(CONDITIONS.first => 2)
+      _(@queue.draw('resp-1', now: T0)).must_equal CONDITIONS.first
+    end
+  end
+
   describe 'draw' do
     it 'pops a seeded ticket and tracks it inflight' do
       @queue.seed(CONDITIONS, 1)
