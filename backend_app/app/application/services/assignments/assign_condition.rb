@@ -45,9 +45,9 @@ module SurveyTracker
           ticket = @queue.draw(respondent_id)
           return nil unless ticket
 
-          persisted = repository.persist_condition(respondent_id:, condition: ticket)
-          @queue.release(respondent_id, ticket) unless persisted == ticket
-          persisted
+          condition, mine = repository.persist_condition(respondent_id:, condition: ticket)
+          @queue.release(respondent_id, ticket) unless mine
+          condition
         rescue Redis::BaseError
           nil
         end

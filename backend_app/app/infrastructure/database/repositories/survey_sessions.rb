@@ -63,14 +63,17 @@ module SurveyTracker
           end
         end
 
-        # Persists a queue-drawn condition on the respondent's session unless
-        # one is already set (concurrent-assignment race). Returns the
-        # condition actually stored, which the caller compares against its
-        # ticket to decide whether to release it.
+        # Persists a queue-drawn condition on the respondent's session unless one
+        # is already set. Returns [condition, mine] where `mine` is true only when
+        # THIS call stored `condition`; when it is false the caller must release
+        # its drawn ticket. `condition` is the authoritative stored value (which
+        # may differ from the ticket, or be nil if a session row exists without
+        # one yet). A concurrent request that wins the unique-respondent_id race
+        # is caught here, so a double-submit neither 500s nor leaks a ticket.
         def persist_condition(respondent_id:, condition:)
           Orm::SurveySession.db.transaction do
             existing = find_by_respondent_id(respondent_id)
-            return existing.condition if existing&.condition
+            return [existing.condition, false] if existing&.condition
 
             if existing
               existing.update(condition:)
@@ -82,8 +85,12 @@ module SurveyTracker
               )
             end
 
-            condition
+            [condition, true]
           end
+        rescue Sequel::UniqueConstraintViolation
+          # A concurrent request created the row first; adopt whatever condition
+          # it committed and let the caller release this call's redundant ticket.
+          [find_by_respondent_id(respondent_id)&.condition, false]
         end
 
         def update_ended_at(respondent_id:)
