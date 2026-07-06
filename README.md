@@ -145,6 +145,43 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 SELECT create_hypertable('behavior_events', 'timestamp');
 ```
 
+### Condition assignment queue (Redis)
+
+Condition assignment draws from a Redis-backed ticket pool so group balance
+tracks *completions*, not starts. It is optional: with no `REDIS_URL` set, or an
+unseeded/unreachable pool, assignment silently falls back to a least-count rule
+over `survey_sessions`. To enable it on Render:
+
+1. **Create a Key Value (Redis) instance** — New → Key Value, in the **same
+   region** as the web service. Copy its **Internal URL**
+   (`redis://red-xxxxxxxx:6379`); prefer a `noeviction` policy so tickets aren't
+   evicted.
+2. **Set environment variables** on the web service:
+   - `REDIS_URL` — the internal URL from step 1.
+   - `ASSIGNMENT_DEADLINE_SECONDS` — inflight ticket TTL, roughly the survey
+     completion time (e.g. `7200` = 2h). A dropout's ticket is recycled once its
+     deadline passes.
+3. **Seed the pool once** after deploy, via the service Shell (`N` = target
+   completions per condition; 4 conditions → `4·N` tickets):
+   ```bash
+   RACK_ENV=production bundle exec rake "assignment:seed[112]"
+   ```
+4. **Verify:**
+   ```bash
+   RACK_ENV=production bundle exec rake assignment:status
+   ```
+   Each condition should read `available=N / inflight=0`; `inflight` rises as
+   respondents are assigned.
+5. **Recover after a Redis flush/restart** (rebuilds the pool from the DB —
+   completed sessions excluded, in-progress ones restored inflight):
+   ```bash
+   RACK_ENV=production bundle exec rake "assignment:reconcile[112]"
+   ```
+
+Other tasks: `assignment:reset[N]` wipes and reseeds. Assignment is idempotent
+per `respondent_id`; a completion burns the respondent's ticket at
+`confirm-upload` time.
+
 ## Debug Panel
 
 The live-event debug overlay (`DebugOverlay.vue`) is disabled by default. To re-enable it on the survey page:
