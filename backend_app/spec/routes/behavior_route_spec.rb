@@ -47,6 +47,32 @@ describe 'Behavior Routes' do
 
       _(last_response.status).must_equal 400
     end
+
+    it 'rejects a key that belongs to a different respondent (IDOR) and stores nothing' do
+      SurveyTracker::Database::Orm::SurveySession.create(
+        respondent_id: 'attacker', condition: 'wEO-wRAM', started_at: Time.now.utc
+      )
+
+      header 'CONTENT_TYPE', 'application/json'
+      post '/api/behavior/attacker/confirm-upload',
+           { key: 'behavior_data/victim_1712345678.bin' }.to_json
+
+      _(last_response.status).must_equal 400
+      _(SurveyTracker::Database::Orm::SurveySession.first(respondent_id: 'attacker').s3_key).must_be_nil
+    end
+
+    it 'rejects a key from a shorter respondent_id that prefixes a longer one' do
+      SurveyTracker::Database::Orm::SurveySession.create(
+        respondent_id: 'user', condition: 'wEO-wRAM', started_at: Time.now.utc
+      )
+
+      header 'CONTENT_TYPE', 'application/json'
+      # 'user' must not be able to claim 'user_001's key
+      post '/api/behavior/user/confirm-upload',
+           { key: 'behavior_data/user_001_5.bin' }.to_json
+
+      _(last_response.status).must_equal 400
+    end
   end
 
   describe 'GET /api/behavior/:respondent_id/presigned-url' do

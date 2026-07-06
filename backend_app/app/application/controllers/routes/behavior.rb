@@ -56,6 +56,17 @@ module SurveyTracker
                 next({ error: 'key is required' }.to_json)
               end
 
+              # The key must be the exact object this respondent's presigned-url
+              # minted for them (behavior_data/<respondent_id>_<unix>.bin), not an
+              # arbitrary path. Otherwise a caller could store another user's key
+              # and have download-url presign it (IDOR). The unix timestamp has no
+              # underscore, so this also stops a shorter id matching a longer one.
+              own_key = %r{\Abehavior_data/#{Regexp.escape(respondent_id)}_\d+\.bin\z}
+              unless key.match?(own_key)
+                response.status = 400
+                next({ error: 'key does not belong to this respondent' }.to_json)
+              end
+
               session = Database::Repository::SurveySessions.new.mark_completed(
                 respondent_id:,
                 s3_key: key
