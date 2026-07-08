@@ -157,6 +157,14 @@ namespace :assignment do
     print_assignment_status(@queue, @conditions)
   end
 
+  desc 'Recycle expired (dropout) inflight tickets back to the pool now ' \
+       '(the draw path also does this lazily; schedule this via cron for active recycling)'
+  task sweep: [:config] do
+    recycled = @queue.sweep_expired!
+    puts "==> Recycled #{recycled} expired ticket(s) back to available."
+    print_assignment_status(@queue, @conditions)
+  end
+
   desc 'Wipe and reseed the queue with N balanced blocks (default 25)'
   task :reset, [:n_blocks] => [:config] do |_t, args|
     @queue.clear!
@@ -187,13 +195,20 @@ namespace :assignment do
       end
     end
 
-    # Refill available with each condition's remaining capacity, interleaved so
-    # any prefix of the pool stays near-balanced.
-    pool = @conditions.flat_map do |c|
-      remaining = n_blocks - completed[c] - inflight[c]
-      Array.new([remaining, 0].max, c)
+    # Refill available with each condition's remaining capacity using block
+    # randomization: deal one ticket per still-stocked condition each round
+    # (shuffled order within the round), skipping exhausted ones. While all
+    # conditions have stock every consecutive group is balanced; a condition
+    # with more remaining only clusters once the others run out.
+    remaining = @conditions.to_h { |c| [c, [n_blocks - completed[c] - inflight[c], 0].max] }
+    until remaining.values.all?(&:zero?)
+      @conditions.shuffle.each do |c|
+        next if remaining[c].zero?
+
+        @queue.push_available(c)
+        remaining[c] -= 1
+      end
     end
-    pool.shuffle.each { |c| @queue.push_available(c) }
 
     puts "==> Reconciled from #{rows.size} assigned sessions " \
          "(#{completed.values.sum} completed, #{inflight.values.sum} inflight)."

@@ -182,6 +182,16 @@ Other tasks: `assignment:reset[N]` wipes and reseeds. Assignment is idempotent
 per `respondent_id`; a completion burns the respondent's ticket at
 `confirm-upload` time.
 
+Expired (dropout) tickets are recycled lazily on the next assignment draw, so
+the pool never starves a real request. That does mean `assignment:status` can
+show a stale `inflight` count between draws. If you want expired tickets
+recycled proactively (accurate live counts regardless of traffic), schedule a
+Render **Cron Job** running the sweep on an interval, e.g. every minute:
+
+```bash
+RACK_ENV=production bundle exec rake assignment:sweep
+```
+
 ## Debug Panel
 
 The live-event debug overlay (`DebugOverlay.vue`) is disabled by default. To re-enable it on the survey page:
