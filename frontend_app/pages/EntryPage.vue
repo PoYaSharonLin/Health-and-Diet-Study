@@ -9,7 +9,7 @@
 import axios from 'axios';
 import { isMobileOrTablet } from '@/lib/device';
 
-const PRE_SURVEY_URL = 'https://zh.research.net/r/FQ78XTL';
+const PRE_SURVEY_URL = 'https://zh.research.net/r/FX5ML2Y';
 const USER_ID_KEY = 'survey_user_id';
 const CONDITION_KEY = 'survey_condition';
 
@@ -27,6 +27,15 @@ export default {
 
     try {
       const { data } = await axios.post('/api/assignment/next', { respondent_id: uid });
+
+      // Already-completed respondents must not re-enter the flow: route them to
+      // the "already done" page instead of the pre-survey, so no new behaviour
+      // data is produced. Guards against the same-browser repeat/refresh case.
+      if (data?.data?.completed) {
+        this.$router.replace({ name: 'AlreadyCompleted' });
+        return;
+      }
+
       const condition = data?.data?.condition;
       if (!condition) throw new Error('Missing condition in response');
 

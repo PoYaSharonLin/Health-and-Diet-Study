@@ -21,8 +21,24 @@ describe 'AssignCondition' do
     condition = result.value!.message[:condition]
     _(SurveyTracker::Service::Assignments::AssignCondition::VALID_CONDITIONS).must_include condition
 
+    # A respondent still in progress is not flagged as completed.
+    _(result.value!.message[:completed]).must_equal false
+
     # Idempotent: a second call returns the same condition.
     again = SurveyTracker::Service::Assignments::AssignCondition.new.call(respondent_id: 'fallback_user')
     _(again.value!.message[:condition]).must_equal condition
+  end
+
+  it 'flags a respondent whose session is already completed' do
+    id = 'completed_user'
+    SurveyTracker::Service::Assignments::AssignCondition.new.call(respondent_id: id)
+    SurveyTracker::Database::Repository::SurveySessions.new.mark_completed(
+      respondent_id: id, s3_key: "behavior_data/#{id}_1.bin"
+    )
+
+    result = SurveyTracker::Service::Assignments::AssignCondition.new.call(respondent_id: id)
+
+    _(result).must_be_kind_of Dry::Monads::Result::Success
+    _(result.value!.message[:completed]).must_equal true
   end
 end

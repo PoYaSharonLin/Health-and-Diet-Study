@@ -9,6 +9,7 @@ import PracticePage from '../pages/PracticePage.vue';
 import SurveyPage from '../pages/SurveyPage.vue';
 import SummaryPage from '../pages/SummaryPage.vue';
 import DeviceBlockPage from '../pages/DeviceBlockPage.vue';
+import AlreadyCompletedPage from '../pages/AlreadyCompletedPage.vue';
 import NotFound from '../pages/404.vue';
 import session, { isConditionValid } from '../lib/session';
 import { isMobileOrTablet } from '../lib/device';
@@ -42,6 +43,7 @@ const routes = [
   { path: '/survey',                 name: 'Survey',               component: SurveyPage },
   { path: '/summary',                name: 'Summary',              component: SummaryPage },
   { path: '/device-block',           name: 'DeviceBlock',          component: DeviceBlockPage },
+  { path: '/already-completed',      name: 'AlreadyCompleted',     component: AlreadyCompletedPage },
   { path: '/invalid',                name: 'Invalid',              component: NotFound },
   { path: '/:pathMatch(.*)*',        name: 'NotFound',             component: NotFound },
 ];
