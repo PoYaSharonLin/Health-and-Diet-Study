@@ -42,6 +42,12 @@
     "preparing": "正在為您準備問卷，請稍候…"
   },
 
+  "alreadyCompleted": {
+    "title": "您已完成本問卷",
+    "lead": "系統偵測到您已填寫過，每人僅限回答一次，感謝您的參與！",
+    "contactPrefix": "如您認為這是誤判，請聯繫："
+  },
+
   "diseases": {
     "hypertension":      "高血壓",
     "diabetes":          "糖尿病",

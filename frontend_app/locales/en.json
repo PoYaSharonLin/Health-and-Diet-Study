@@ -42,6 +42,12 @@
     "preparing": "Preparing your survey, please wait…"
   },
 
+  "alreadyCompleted": {
+    "title": "You have already completed this survey",
+    "lead": "Our system detected that you have already responded. Each person may answer only once. Thank you for your participation!",
+    "contactPrefix": "If you believe this is a mistake, please contact: "
+  },
+
   "diseases": {
     "hypertension":      "Hypertension",
     "diabetes":          "Diabetes",

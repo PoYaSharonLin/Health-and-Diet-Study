@@ -27,6 +27,15 @@ export default {
 
     try {
       const { data } = await axios.post('/api/assignment/next', { respondent_id: uid });
+
+      // Already-completed respondents must not re-enter the flow: route them to
+      // the "already done" page instead of the pre-survey, so no new behaviour
+      // data is produced. Guards against the same-browser repeat/refresh case.
+      if (data?.data?.completed) {
+        this.$router.replace({ name: 'AlreadyCompleted' });
+        return;
+      }
+
       const condition = data?.data?.condition;
       if (!condition) throw new Error('Missing condition in response');
 
