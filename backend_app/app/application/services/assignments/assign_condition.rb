@@ -22,14 +22,23 @@ module SurveyTracker
           return Failure(bad_request('respondent_id has an invalid format')) unless Domain::Shared::RespondentId.valid?(respondent_id)
 
           repository = Database::Repository::SurveySessions.new
-          condition = repository.find_by_respondent_id(respondent_id)&.condition
+          existing = repository.find_by_respondent_id(respondent_id)
+
+          # A respondent who already finished must not restart the flow. The
+          # frontend reads this flag and routes them to the "already done" page
+          # instead of the pre-survey, so no new behaviour data is produced.
+          # A completed session always carries a condition, so the draw/assign
+          # fallbacks below are skipped and no ticket is wasted.
+          completed = existing&.status == 'completed'
+
+          condition = existing&.condition
           condition ||= draw_from_queue(repository, respondent_id)
           condition ||= repository.find_or_assign_condition(
             respondent_id:,
             valid_conditions: VALID_CONDITIONS
           )
 
-          Success(ok({ respondent_id:, condition: }))
+          Success(ok({ respondent_id:, condition:, completed: }))
         rescue StandardError => e
           Failure(internal_error(e.message))
         end
