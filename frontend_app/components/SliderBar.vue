@@ -7,7 +7,7 @@
         :min="min"
         :max="max"
         :step="step"
-        v-model.number="internalValue"
+        :value="internalValue"
         @input="onInput"
         @change="onFinish"
         @pointerdown="onPointerDown"
@@ -29,6 +29,11 @@ import tracker from '@/lib/tracker';
 // Keep in sync with .native-slider::-webkit-slider-thumb { width / height } in <style> below.
 const THUMB_PX = 22;
 const RESIZE_DEBOUNCE_MS = 150;
+
+// Fixed input latency (ms): a slider action is applied to the thumb/value only
+// after this delay, so the thumb visibly trails the cursor by a constant gap.
+// Tune this single number to make the lag stronger/weaker.
+const INPUT_LAG_MS = 250;
 
 export default {
   name: 'SliderBar',
@@ -58,10 +63,19 @@ export default {
     modelValue(newVal) {
       if (!this.finished) this.internalValue = newVal;
     },
+    // When the answer is locked, commit the most recent value immediately so
+    // the delay never causes a confirm to capture a stale (pre-lag) value.
+    finished(isFinished) {
+      if (isFinished) this.flushPending();
+    },
   },
 
   mounted() {
     this.$nextTick(() => this.emitRect());
+    // Outstanding lag timers, cleared on unmount so they can't fire late.
+    this._pending = new Set();
+    // Most recent raw value seen, used to flush on lock.
+    this._latestRaw = null;
     this._resizeTimer = null;
     this._onResize = () => {
       clearTimeout(this._resizeTimer);
@@ -74,6 +88,10 @@ export default {
     if (this._onResize) {
       window.removeEventListener('resize', this._onResize);
       clearTimeout(this._resizeTimer);
+    }
+    if (this._pending) {
+      this._pending.forEach(clearTimeout);
+      this._pending.clear();
     }
   },
 
@@ -132,11 +150,42 @@ export default {
 
     onInput(e) {
       if (this.finished) return;
-      this.emit(this.internalValue, this.pointerX, this.pointerY, 'drag');
+      this.scheduleLagged(e, 'drag');
     },
 
     onFinish(e) {
-      this.emit(this.internalValue, this.pointerX, this.pointerY, 'release');
+      if (this.finished) return;
+      this.scheduleLagged(e, 'release');
+    },
+
+    // Apply the native input's new value only after INPUT_LAG_MS. Until the
+    // timer fires we pin the thumb back to the current (delayed) value so it
+    // never paints ahead of the cursor — the thumb trails by a fixed gap.
+    scheduleLagged(e, phase) {
+      const raw = e.target.valueAsNumber;
+      this._latestRaw = raw;
+      e.target.value = this.internalValue;
+      const x = this.pointerX;
+      const y = this.pointerY;
+      const id = setTimeout(() => {
+        this._pending.delete(id);
+        if (this.finished) return;
+        this.internalValue = raw;
+        this.emit(raw, x, y, phase);
+      }, INPUT_LAG_MS);
+      this._pending.add(id);
+    },
+
+    // Cancel outstanding lag timers and apply the newest value at once, so a
+    // lock (confirm) always records the position the user last dragged to.
+    flushPending() {
+      if (!this._pending) return;
+      this._pending.forEach(clearTimeout);
+      this._pending.clear();
+      if (this._latestRaw != null && this._latestRaw !== this.internalValue) {
+        this.internalValue = this._latestRaw;
+        this.emit(this._latestRaw, this.pointerX, this.pointerY, 'release');
+      }
     },
 
     emit(val, x = null, y = null, phase = 'drag') {
