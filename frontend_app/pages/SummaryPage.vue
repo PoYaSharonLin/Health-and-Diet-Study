@@ -321,7 +321,7 @@ export default {
 
         this.submitted = true;
 
-        const postSurveyUrl = new URL('https://zh.research.net/r/FN85737');
+        const postSurveyUrl = new URL('https://zh.research.net/r/DB6F2JF');
         postSurveyUrl.searchParams.set('uid', this.userId);
         const condition = session.getCondition();
         if (condition) postSurveyUrl.searchParams.set('condition', condition);
